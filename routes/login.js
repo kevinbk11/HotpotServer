@@ -1,18 +1,17 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/', function(req, res, next) {
-    res.render('index', { title: 'Express' });
+/* GET home page. */
+router.post('/test', (req, res)=> {
     const mysql = require('mysql');
     var mysqlConnection = mysql.createConnection({
         host:'localhost',
         user : 'root',
-        password : 'pw',
-        database : "db",
+        password : 'r125121587',
+        database : "testdb",
         port : 3306
       
     })
-
   
     mysqlConnection.connect((err)=>{
         if(!err)
@@ -36,8 +35,8 @@ router.get('/', function(req, res, next) {
           console.log(err);
         }
         console.log("test");
-
     })
+    res.render("mainSystemLayout")
 });
 
 module.exports = router;
