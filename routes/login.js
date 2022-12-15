@@ -1,8 +1,9 @@
 var express = require('express');
+const app = require('../app');
 var router = express.Router();
 
 /* GET home page. */
-router.post('/test', (req, res)=> {
+router.post('/login', (req, res)=> {
     const mysql = require('mysql');
     var mysqlConnection = mysql.createConnection({
         host:'localhost',
