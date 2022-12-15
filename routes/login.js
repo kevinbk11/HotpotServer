@@ -32,6 +32,7 @@ router.post('/login', (req, res) => {
         console.log("test");
     })
     res.render("mainSystemLayout")
+    
 });
 
 module.exports = router;
