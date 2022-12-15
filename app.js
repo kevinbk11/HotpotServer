@@ -25,7 +25,6 @@ app.use(express.static('public'))
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.post('/login',loginRouter);
-app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist/'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
