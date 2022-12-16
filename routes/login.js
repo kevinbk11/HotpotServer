@@ -1,4 +1,5 @@
 var express = require('express');
+const { render } = require('../app');
 const app = require('../app');
 var router = express.Router();
 
@@ -8,8 +9,8 @@ router.post('/login', (req, res) => {
     var mysqlConnection = mysql.createConnection({
         host: 'localhost',
         user: 'root',
-        password: 'H29ka1b57klG546HJM65.',
-        database: "useraccountdb",
+        password: 'r125121587',
+        database: "testdb",
         port: 3306
 
     })
@@ -21,17 +22,25 @@ router.post('/login', (req, res) => {
             console.log(err);
         }
     })
-    var data = req.body;
-    //mysqlConnection.query(`INSERT INTO user VALUE ('${data.name}','${data.password}');`)
-    mysqlConnection.query('SELECT * FROM user', (err, rows, fields) => {
+    mysqlConnection.query('SELECT * FROM UserData', (err, rows, fields) => {
         if (!err) {
-            console.log(rows);
+            
         } else {
             console.log(err);
         }
         console.log("test");
     })
-    res.render("mainSystemLayout")
+    if(1)
+    {   //mysqlConnection.query('SELECT * FROM UserData') 菜的id
+        res.redirect("/test")//引到主業面
+        $.ajax()
+    }
+    else
+    {
+        res.redirect("/index.html")
+    }
+
+
     
 });
 
