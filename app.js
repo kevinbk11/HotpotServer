@@ -36,6 +36,10 @@ app.post('/login/api/notes/save',saveRouter);
 
 app.get('/login/api/notes/load',loadRouter);
 
+app.get('/post',(req,res)=>{
+  res.render('post')
+})
+
 app.use('/test',(req,res)=>{
   res.render('mainSystemLayout')
 })

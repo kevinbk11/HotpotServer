@@ -10,8 +10,13 @@ window.onload=()=>{
             event.returnValue=false;
         }
     }
-    
-    var formData = {
+    let foodButtonArray=$(".food")
+    for(let i=0;i<foodButtonArray.length;i++)
+    {
+        foodButtonArray[i].addEventListener('click',()=>{alert(i)})
+    }
+    alert()
+    /*var formData = {
         choosedate :1,
         notes :  2,
         selEmp : 3
@@ -51,6 +56,6 @@ window.onload=()=>{
 			}
 		});	
         
-    })
+    })*/
 
 }
