@@ -9,8 +9,8 @@ router.post('/login', (req, res) => {
     var mysqlConnection = mysql.createConnection({
         host: 'localhost',
         user: 'root',
-        password: 'r125121587',
-        database: "testdb",
+        password: 'H29ka1b57klG546HJM65.',
+        database: "useraccountdb",
         port: 3306
 
     })
