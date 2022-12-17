@@ -1,18 +1,23 @@
+const { json } = require('express');
 var express = require('express');
+
+var http = require('http')
+const { render } = require('../app');
+
 const app = require('../app');
 var router = express.Router();
+const mysql = require('mysql');
 
+var mysqlConnection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'H29ka1b57klG546HJM65.',
+    database: "useraccountdb",
+    port: 3306
+})
 /* GET home page. */
 router.post('/login', (req, res) => {
-    const mysql = require('mysql');
-    var mysqlConnection = mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        password: 'H29ka1b57klG546HJM65.',
-        database: "useraccountdb",
-        port: 3306
 
-    })
 
     mysqlConnection.connect((err) => {
         if (!err) {
@@ -23,8 +28,10 @@ router.post('/login', (req, res) => {
     })
     var data = req.body;
 
+
     mysqlConnection.query(`INSERT INTO userooo VALUE (2,'${data.account}','${data.password}');`)
     mysqlConnection.query('SELECT * FROM userooo', (err, rows, fields) => {
+
         if (!err) {
             console.log(rows);
         } else {
@@ -32,9 +39,24 @@ router.post('/login', (req, res) => {
         }
         console.log("test");
     })
-    res.render("mainSystemLayout")
-});
 
+    if(1)//登入成功
+    {   //player = mysqlConnection.query('SELECT * FROM UserData') 菜的id
+        let json1 = {'0':1,'1':2,'2':9,'3':13,'4':115}//player.可解鎖
+        let arr = []
+        for(key in json1)
+        {
+            arr.push(json1[key])
+        }
+        res.render("mainSystemLayout",{count:arr})//引到主業面
+        
+    }
+    else//登入失敗
+    {
+        res.redirect("/index.html")
+    }
+    
+});
 module.exports = router;
 
 function createAC() {
