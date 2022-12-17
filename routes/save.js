@@ -9,7 +9,6 @@ router.post('/login/api/notes/save', function(req, res, next) {
 	customer.notes = req.body.notes;
 	customer.selEmp = req.body.selEmp;
 	customers.push(customer);
-	
 	return res.send(customer);
 });
 

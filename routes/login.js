@@ -4,18 +4,19 @@ var http = require('http')
 const { render } = require('../app');
 const app = require('../app');
 var router = express.Router();
+const mysql = require('mysql');
 
+var mysqlConnection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'r125121587',
+    database: "testdb",
+    port: 3306
+
+})
 /* GET home page. */
 router.post('/login', (req, res) => {
-    const mysql = require('mysql');
-    var mysqlConnection = mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        password: 'r125121587',
-        database: "testdb",
-        port: 3306
 
-    })
 
     mysqlConnection.connect((err) => {
         if (!err) {
@@ -26,7 +27,7 @@ router.post('/login', (req, res) => {
     })
     var data = req.body;
     //mysqlConnection.query(`INSERT INTO user VALUE ('${data.name}','${data.password}');`)
-    mysqlConnection.query('SELECT * FROM user', (err, rows, fields) => {
+    mysqlConnection.query('SELECT * FROM UserData', (err, rows, fields) => {
         if (!err) {
             
         } else {
@@ -35,21 +36,20 @@ router.post('/login', (req, res) => {
         console.log("test");
     })
     if(1)//登入成功
-    {   //mysqlConnection.query('SELECT * FROM UserData') 菜的id
-        let json1 = {'a':1,'b':2,'c':9,'d':13,'e':115}
+    {   //player = mysqlConnection.query('SELECT * FROM UserData') 菜的id
+        let json1 = {'0':1,'1':2,'2':9,'3':13,'4':115}//player.可解鎖
         let arr = []
         for(key in json1)
         {
             arr.push(json1[key])
         }
         res.render("mainSystemLayout",{count:arr})//引到主業面
+        
     }
     else//登入失敗
     {
         res.redirect("/index.html")
     }
-
     
 });
-
 module.exports = router;

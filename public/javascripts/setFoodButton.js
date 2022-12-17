@@ -1,4 +1,5 @@
 window.onload=()=>{
+    
     document.oncontextmenu = function(){
         event.returnValue = false;
     }
@@ -11,11 +12,21 @@ window.onload=()=>{
         }
     }
     let foodButtonArray=$(".food")
+    let ws=new WebSocket('ws://localhost:3000')
+
+
+    ws.onmessage=(e)=>{console.log(e.data)}
+
     for(let i=0;i<foodButtonArray.length;i++)
     {
-        foodButtonArray[i].addEventListener('click',()=>{alert(i)})
+        foodButtonArray[i].addEventListener('click',()=>{
+            let data = {
+                command:'buy',
+                data:foodButtonArray[i].id
+            }
+            ws.send(JSON.stringify(data))
+        })
     }
-    alert()
     /*var formData = {
         choosedate :1,
         notes :  2,
