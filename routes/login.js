@@ -22,8 +22,8 @@ router.post('/login', (req, res) => {
         }
     })
     var data = req.body;
-    mysqlConnection.query(`INSERT INTO user VALUE ('${data.name}','${data.password}');`)
-    mysqlConnection.query('SELECT * FROM user', (err, rows, fields) => {
+    mysqlConnection.query(`INSERT INTO userooo VALUE (,'${data.account}','${data.password}');`)
+    mysqlConnection.query('SELECT * FROM userooo', (err, rows, fields) => {
         if (!err) {
             console.log(rows);
         } else {
