@@ -10,22 +10,35 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login');
+var saveRouter = require('./routes/save')
+var loadRouter = require('./routes/load')
+
 var app = express();
-var testABC=5;
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
 app.use(logger('dev'));
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static('public'))
+
 app.use('/', indexRouter);
+
 app.use('/users', usersRouter);
+
 app.post('/login',loginRouter);
-app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist/'));
+
+app.post('/login/api/notes/save',saveRouter);
+
+app.get('/login/api/notes/load',loadRouter);
+
+app.use('/test',(req,res)=>{
+  res.render('mainSystemLayout')
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
