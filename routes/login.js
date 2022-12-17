@@ -12,7 +12,6 @@ var mysqlConnection = mysql.createConnection({
     password: 'r125121587',
     database: "testdb",
     port: 3306
-
 })
 /* GET home page. */
 router.post('/login', (req, res) => {
