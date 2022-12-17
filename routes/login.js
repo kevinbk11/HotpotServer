@@ -11,8 +11,8 @@ router.post('/login', (req, res) => {
     var mysqlConnection = mysql.createConnection({
         host: 'localhost',
         user: 'root',
-        password: 'r125121587',
-        database: "testdb",
+        password: 'H29ka1b57klG546HJM65.',
+        database: "useraccountdb",
         port: 3306
 
     })
@@ -24,7 +24,9 @@ router.post('/login', (req, res) => {
             console.log(err);
         }
     })
-    mysqlConnection.query('SELECT * FROM UserData', (err, rows, fields) => {
+    var data = req.body;
+    //mysqlConnection.query(`INSERT INTO user VALUE ('${data.name}','${data.password}');`)
+    mysqlConnection.query('SELECT * FROM user', (err, rows, fields) => {
         if (!err) {
             
         } else {
@@ -32,7 +34,7 @@ router.post('/login', (req, res) => {
         }
         console.log("test");
     })
-    if(1)
+    if(1)//登入成功
     {   //mysqlConnection.query('SELECT * FROM UserData') 菜的id
         let json1 = {'a':1,'b':2,'c':9,'d':13,'e':115}
         let arr = []
@@ -41,13 +43,11 @@ router.post('/login', (req, res) => {
             arr.push(json1[key])
         }
         res.render("mainSystemLayout",{count:arr})//引到主業面
-
     }
-    else
+    else//登入失敗
     {
         res.redirect("/index.html")
     }
-
 
     
 });
