@@ -1,7 +1,9 @@
 const { json } = require('express');
 var express = require('express');
+
 var http = require('http')
 const { render } = require('../app');
+
 const app = require('../app');
 var router = express.Router();
 const mysql = require('mysql');
@@ -25,15 +27,19 @@ router.post('/login', (req, res) => {
         }
     })
     var data = req.body;
-    //mysqlConnection.query(`INSERT INTO user VALUE ('${data.name}','${data.password}');`)
-    mysqlConnection.query('SELECT * FROM UserData', (err, rows, fields) => {
+
+
+    mysqlConnection.query(`INSERT INTO userooo VALUE (2,'${data.account}','${data.password}');`)
+    mysqlConnection.query('SELECT * FROM userooo', (err, rows, fields) => {
+
         if (!err) {
-            
+            console.log(rows);
         } else {
             console.log(err);
         }
         console.log("test");
     })
+
     if(1)//登入成功
     {   //player = mysqlConnection.query('SELECT * FROM UserData') 菜的id
         let json1 = {'0':1,'1':2,'2':9,'3':13,'4':115}//player.可解鎖
@@ -52,3 +58,11 @@ router.post('/login', (req, res) => {
     
 });
 module.exports = router;
+
+function createAC() {
+
+}
+
+function loginAC() {
+
+}
