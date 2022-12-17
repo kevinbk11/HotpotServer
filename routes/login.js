@@ -22,7 +22,9 @@ router.post('/login', (req, res) => {
             console.log(err);
         }
     })
-    mysqlConnection.query('SELECT * FROM UserData', (err, rows, fields) => {
+    var data = req.body;
+    //mysqlConnection.query(`INSERT INTO user VALUE ('${data.name}','${data.password}');`)
+    mysqlConnection.query('SELECT * FROM user', (err, rows, fields) => {
         if (!err) {
             
         } else {
@@ -30,16 +32,14 @@ router.post('/login', (req, res) => {
         }
         console.log("test");
     })
-    if(1)
+    if(1)//登入成功
     {   //mysqlConnection.query('SELECT * FROM UserData') 菜的id
         res.redirect("/test")//引到主業面
-        $.ajax()
     }
-    else
+    else//登入失敗
     {
         res.redirect("/index.html")
     }
-
 
     
 });
