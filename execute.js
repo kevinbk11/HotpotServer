@@ -1,54 +1,80 @@
-let loginPlayer = []
 
+
+
+let loginPlayer = []
+let hotpot = []
+class Food
+{
+    constructor(name,id,time)
+    {
+        this.name=name
+        this.id=id
+        this.time=time
+        this.startCountDown()  
+    }
+    async startCountDown()
+    {
+        let p = new Promise(sol=>{
+            let id = setInterval(()=>{
+                console.log(`${this.name+":"+this.id}:${--this.time}`)
+                if(this.time==0){
+                    clearInterval(id)
+                    sol("end")
+                }
+            },1000)
+        })
+        p.then(()=>{
+            hotpot.shift()
+            console.log(hotpot)
+        })
+    }
+}
 function execute(wss, ws, req) {
+    function jsonType(type){return(type+'Response')}
     try {
         let json = JSON.parse(req)
         let data = JSON.parse(json.data)
-            //向資料庫查找該hash
-            //若查詢不到，則回傳錯誤
-        if (data.hash != "hash") {
-            ws.send(JSON.stringify({ type: 'errorResponse', 'data': false }))
+        console.log(json.hash)
+        if (json.hash != "hash") {
+            ws.send(JSON.stringify({ type: jsonType('error'), 'data': false }))
             return
         }
         switch (json.type) {
             case "food":
                 {
+                    let value = JSON.parse(data.value)
                     //取得sql上該玩家的資料
                     //判斷能不能買
                     //如果能買 return購買的結果
-                    ws.send(JSON.stringify({ type: 'buyFoodResponse', 'data': false }))
+                    //ws.send(JSON.stringify({ type: 'buyFoodResponse', 'data': false }))
+                    hotpot.push(new Food(value.name,value.id,value.time))
                     break;
                 }
             case "talk":
                 {
                     let talkData = JSON.parse(json.data)
                     wss.clients.forEach(client => {
-                        client.send(JSON.stringify({ type: 'talkResponse', 'data': talkData.value }))
+                        client.send(JSON.stringify({ type: jsonType('talk'), 'data': talkData.value }))
                     })
                     console.log('test')
                     break;
                 }
             case "getMoney":
                 {
-                    ws.send(JSON.stringify({ type: 'geyMoneyResponse', 'data': true }))
+                    ws.send(JSON.stringify({ type: jsonType('getMoney'), 'data': true }))
                     break;
                 }
             case "getData":
                 {
-                    console.log(loginPlayer)
-                    console.log(data.hash)
-                    console.log("---")
-
                     for (let i = 0; i < loginPlayer.length; i++) {
-
                         if (loginPlayer[i] == data.hash) {
-                            ws.send(JSON.stringify({ type: json.type + 'Response', 'data': false }))
+                            ws.send(JSON.stringify({ type: jsonType('getData'), 'data': false }))
                             return
                         }
                     }
                     console.log("hi")
                     loginPlayer.push(data.hash)
-                    ws.send(JSON.stringify({ type: json.type + 'Response', 'data': true }))
+                    ws.send(JSON.stringify({ type: jsonType('getData'), 'data': true }))
 
                 }
         }

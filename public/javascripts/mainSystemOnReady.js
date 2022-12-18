@@ -1,18 +1,20 @@
 window.onload = () => {
 
-    let ws = new WebSocket($(location).attr('href').replace("https", "wss"))
+    let ws = new WebSocket($(location).attr('href').replace("http", "ws"))
     let hash = $("#name").html()
-    let data = {
-        value: "name",
-        'hash': hash
-    }
-    let json = JSON.stringify({
-        type: "getData",
-        'data': JSON.stringify(data)
-    })
     $("#name").html("name")
     let player = new Player("name", hash, ws)
 
+    let data = {
+        value: "name"
+    }
+    let json = JSON.stringify({
+        type: "getData",
+        'hash': hash,
+        'data': JSON.stringify(data)
+    })
+
+    ws.onopen = () => { ws.send(json) }
     document.oncontextmenu = function() {
         event.returnValue = false;
     }
@@ -35,16 +37,19 @@ window.onload = () => {
         player.getMoney(50)
     })
     let foodButtonArray = $(".food")
+    let foodId=0
     for (let i = 0; i < foodButtonArray.length; i++) {
         foodButtonArray[i].addEventListener('click', () => {
             let data = {
                 type: 'food',
-                data: foodButtonArray[i].id
+                'hash':hash,
+                data: JSON.stringify({value:JSON.stringify({name:i,id:foodId,time:5})})
             }
+            foodId++
             ws.send(JSON.stringify(data))
         })
     }
-    ws.onopen = () => { ws.send(json) }
+
 
     ws.onmessage = (e) => {
         let response = JSON.parse(e.data)
