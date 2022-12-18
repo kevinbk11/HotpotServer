@@ -1,4 +1,3 @@
-
 var createError = require('http-errors');
 var express = require('express');
 var execute = require('./execute')
@@ -9,8 +8,6 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login');
-var saveRouter = require('./routes/save')
-var loadRouter = require('./routes/load')
 
 var app = express();
 
@@ -25,20 +22,20 @@ var server = http.createServer(app);
 server.on('listening', onListening);
 
 function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  console.log('Listening on ' + bind);
+    var addr = server.address();
+    var bind = typeof addr === 'string' ?
+        'pipe ' + addr :
+        'port ' + addr.port;
+    console.log('Listening on ' + bind);
 }
 
 server.listen(port)
-wss=new SocketServer({server})
+wss = new SocketServer({ server })
 
-wss.on('connection',ws=>{
-  ws.on('message',data=>{
-    execute(ws,data)
-  })
+wss.on('connection', ws => {
+    ws.on('message', data => {
+        execute(wss, ws, data)
+    })
 })
 
 // view engine setup
@@ -57,38 +54,33 @@ app.use('/', indexRouter);
 
 app.use('/users', usersRouter);
 
-app.post('/login',loginRouter);
+app.post('/login', loginRouter);
 
-app.post('/login/api/notes/save',saveRouter);
 
-app.get('/login/api/notes/load',loadRouter);
 
-app.get('/post',(req,res)=>{
-  res.render('post')
+
+
+
+app.use('/test', (req, res) => {
+    res.render('mainSystemLayout')
 })
 
-app.use('/test',(req,res)=>{
-  res.render('mainSystemLayout')
-})
 
-app.use('/hello',(req,res)=>{
-  console.log(wss)
-})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+    next(createError(404));
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 

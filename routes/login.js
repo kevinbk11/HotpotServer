@@ -9,23 +9,24 @@ var router = express.Router();
 const mysql = require('mysql');
 
 var mysqlConnection = mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        password: 'H29ka1b57klG546HJM65.',
-        database: "useraccountdb",
-        port: 3306
-    })
-    /* GET home page. */
-router.post('/login', (req, res) => {
-
-
-    mysqlConnection.connect((err) => {
+    host: 'localhost',
+    user: 'root',
+    password: 'H29ka1b57klG546HJM65.',
+    database: "useraccountdb",
+    port: 3306
+})
+mysqlConnection.connect((err) => {
         if (!err) {
             console.log("worked!")
         } else {
             console.log(err);
         }
     })
+    /* GET home page. */
+router.post('/login', (req, res) => {
+
+
+
     var data = req.body;
     /*if(1)//登入成功
     {   //mysqlConnection.query('SELECT * FROM UserData') 菜的id
@@ -48,20 +49,21 @@ router.post('/login', (req, res) => {
                     if (rows[i].UserName == data.account) {
                         HaveAC = true; //判斷有沒有帳號
                         if (rows[i].Password == data.password) {
-                            res.render("mainSystemLayout");
-                            //正確就引到主頁面
+                            let json1 = { '0': 1, '1': 2, '2': 9, '3': 13, '4': 115 } //player.可解鎖
+                            let arr = []
+                            for (key in json1) {
+                                arr.push(json1[key])
+                            }
                             console.log("Login Success");
-                        } else {
-                            //密碼輸入錯誤
-                            console.log("error")
+                            res.render("mainSystemLayout", { count: arr, name: "hash" }) //引到主業面
+                                //正確就引到主頁面
+                            break
                         }
-
                     }
                 }
                 if (HaveAC == false) {
                     console.log("testterror")
                 }
-
             } else {
                 console.log(err);
             }

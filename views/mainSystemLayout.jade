@@ -5,9 +5,19 @@ html(lang='en')
     meta(http-equiv='X-UA-Compatible' content='IE=edge')
     meta(name='viewport' content='width=device-width, initial-scale=1.0')
     script(src="https://code.jquery.com/jquery-3.6.2.slim.min.js" integrity="sha256-E3P3OaTZH+HlEM7f1gdAT3lHAn4nWBZXuYe89DFg2d0=" crossorigin="anonymous")
-    script(src="javascripts\\setFoodButton.js")
+    script(src="javascripts\\mainSystemOnReady.js" type="text/javascript")
     script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
+    script(src="javascripts\\playerClass.js" type="text/javascript")
     title Document
   body
-
+    each data in count
+       button(id = data class="food") #{data}
+    p(id = 'name') #{name}
+    #send-box
+    div(id="content")
+    form#send-form
+      input#name(type='text' name='name' placeholder='暱稱')
+      input#msg(type='text' name='msg' placeholder='說點什麼？')
+      input(type='button' id="submit" value='送出')
     h1 嗨囉
+    input(type='button' id="getmoney" value="錢錢")
