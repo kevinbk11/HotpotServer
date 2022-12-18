@@ -1,15 +1,15 @@
 class Player
 {
-    constructor(name,hash,ws)
+    constructor(name,id,ws)
     {
         this.name=name
-        this.hash=hash
+        this.id=id
         this.ws=ws
     }
     getMoney(money)
     {
-        let dataJson=JSON.stringify({value:money,hash:this.hash})
-        let request =JSON.stringify({type:"getMoney",data:dataJson}) 
+        let dataJson=JSON.stringify({value:money})
+        let request =JSON.stringify({type:"getMoney",id:this.id,data:dataJson}) 
         this.ws.send(request)
     }
 }

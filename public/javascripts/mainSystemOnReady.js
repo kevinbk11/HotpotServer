@@ -1,20 +1,36 @@
+let ws=null
+let id=null
+function jsonStringMaker(type,data)
+{
+    let header = JSON.stringify({'type':type,'id':id,data:data})
+    return header
+}
+window.addEventListener('beforeunload',(e)=>{
+    e.preventDefault();
+    e.returnValue="hi";
+})
+$(window).on('unload',(e)=>{
+    let data = JSON.stringify({value:'exit'})
+    let json = jsonStringMaker('exit',data)
+    console.log(json)
+    ws.send(json)
+})
 window.onload = () => {
-
-    let ws = new WebSocket($(location).attr('href').replace("http", "ws"))
-    let hash = $("#name").html()
+    ws = new WebSocket($(location).attr('href').replace("https", "wss"))
+    id = $("#name").html()
     $("#name").html("name")
-    let player = new Player("name", hash, ws)
+    let player = new Player("name", id, ws)
 
     let data = {
-        value: "name"
+        
     }
     let json = JSON.stringify({
         type: "getData",
-        'hash': hash,
+        'id':player.id,
         'data': JSON.stringify(data)
     })
-
-    ws.onopen = () => { ws.send(json) }
+    
+    ws.onopen = () => {ws.send(json) }
     document.oncontextmenu = function() {
         event.returnValue = false;
     }
@@ -27,10 +43,9 @@ window.onload = () => {
     $("#submit").on('click', () => {
         let data = {
             value: $("#msg").val(),
-            'hash': hash
         }
         data = JSON.stringify(data)
-        let json = { type: 'talk', 'data': data }
+        let json = { type: 'talk','id':player.id,'data': data }
         ws.send(JSON.stringify(json))
     })
     $("#getmoney").on('click', () => {
@@ -42,8 +57,8 @@ window.onload = () => {
         foodButtonArray[i].addEventListener('click', () => {
             let data = {
                 type: 'food',
-                'hash':hash,
-                data: JSON.stringify({value:JSON.stringify({name:i,id:foodId,time:5})})
+                'id':player.id,
+                data: JSON.stringify({value:JSON.stringify({name:i,'id':foodId,time:5})})
             }
             foodId++
             ws.send(JSON.stringify(data))
@@ -57,18 +72,24 @@ window.onload = () => {
         switch (response.type) {
             case "talkResponse":
                 {
-                    console.log(response.data)
                     $("#content").append(response.data + "<br>")
                     break
                 }
             case "errorResponse":
                 {
-                    alert("請不要使用主控台。")
+                    alert("error")
                     break
                 }
             case "getDataResponse":
                 {
-                    if (!response.data) alert("你已經在某處登入了")
+                    if(response.data.success)
+                    {
+                        $("#name").html(response.data.name)
+                    }
+                    else
+                    {
+                        alert("你已登入")
+                    }
                 }
         }
 

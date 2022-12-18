@@ -37,6 +37,9 @@ wss.on('connection', ws => {
         execute(wss, ws, data)
     })
 })
+wss.on('disconnect',()=>[
+  console.log("dis")
+])
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -54,7 +57,7 @@ app.use('/', indexRouter);
 
 app.use('/users', usersRouter);
 
-app.post('/login', loginRouter);
+app.post('/login', loginRouter.router);
 
 
 

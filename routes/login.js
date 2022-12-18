@@ -8,11 +8,11 @@ const app = require('../app');
 var router = express.Router();
 const mysql = require('mysql');
 
-/*var mysqlConnection = mysql.createConnection({
+var mysqlConnection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'H29ka1b57klG546HJM65.',
-    database: "useraccountdb",
+    password: 'r125121587',
+    database: "testdb",
     port: 3306
 })
 mysqlConnection.connect((err) => {
@@ -44,13 +44,11 @@ router.post('/login', (req, res) => {
         for (key in json1) {
             arr.push(json1[key])
         }
-        console.log("Login Success");
         mysqlConnection.query('SELECT * FROM user', (err, rows, fields) => {
             var HaveAC = false
             if (!err) {
                 for (let i = 0; rows[i] != null; i++) {
-                    console.log(rows[i]) //一個一個搜尋帳號
-                    if (rows[i].UserName == data.account) {
+                    if (rows[i].Account == data.account) {
                         HaveAC = true; //判斷有沒有帳號
                         if (rows[i].Password == data.password) {
                             let json1 = { '0': 1, '1': 2, '2': 9, '3': 13, '4': 115 } //player.可解鎖
@@ -59,7 +57,8 @@ router.post('/login', (req, res) => {
                                 arr.push(json1[key])
                             }
                             console.log("Login Success");
-                            res.render("mainSystemLayout", { count: arr, name: rows[i].UserName }) //引到主業面
+
+                            res.render("mainSystemLayout", { count: arr, name: rows[i].id }) //引到主業面
                                 //正確就引到主頁面
                             break
                         }
@@ -71,33 +70,33 @@ router.post('/login', (req, res) => {
             } else {
                 console.log(err);
             }
-            console.log("test");
         })
     } else { // 創建
+        console.log(data.nickname)
         mysqlConnection.query('SELECT * FROM user', (err, rows, fields) => {
-
+            console.log(rows[0])
             if (!err) {
                 for (let i = 0; rows[i] != null; i++) { //一個一個搜尋帳號
-                    if (rows[i].UserName == data.account) {
+                    if (rows[i].Account == data.account) {
                         //顯示這個帳號已被使用
                         console.log("Have been used");
-                        break;
-                    } else {
-                        //將使用者填入的資料插入資料庫
-                        let j = 0
-                        for (j; rows[j] != null; j++) {}
-                        mysqlConnection.query(`INSERT INTO user VALUE (${j+1},'${data.account}','${data.password}','${data.nickname}');`)
-                        break
-
-
-                        if (rows[j].UserID == j) {
-                            //註冊成功 回到上一頁
-                        } else {
-                            //註冊失敗請在試一次
-                        }
-
+                        return
                     }
                 }
+                let j = 0
+                console.log("lol")
+                for (j; rows[j] != null; j++) {}
+                let newId = Math.floor(Math.random()*10000)
+                mysqlConnection.query(`SELECT * FROM user WHERE id = ${newId}`,(err,rows2)=>{
+                    while(rows2.length!=0)
+                    {
+                        newId = Math.floor(Math.random()*10000)
+                        mysqlConnection.query(`SELECT * FROM user WHERE id = ${newId}`,(err,rows3)=>{
+
+                        })
+                    }
+                })
+                mysqlConnection.query(`INSERT INTO user VALUE (${j+1},'${data.account}','${data.password}','${data.nickname}','${newId}');`)
 
             } else {
                 console.log(err);
@@ -123,7 +122,7 @@ router.post('/login', (req, res) => {
 
     
 });
-module.exports = router;
+module.exports = {'router':router,'sql':mysqlConnection};
 
 function createAC() {
 
