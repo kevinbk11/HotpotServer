@@ -9,15 +9,13 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login');
-var saveRouter = require('./routes/save')
-var loadRouter = require('./routes/load')
 
 var app = express();
 
 var http = require('http');
 
 const SocketServer = require('ws').Server
-var port = "3000"
+var port = "8080"
 
 app.set('port', port);
 var server = http.createServer(app);
@@ -37,7 +35,7 @@ wss=new SocketServer({server})
 
 wss.on('connection',ws=>{
   ws.on('message',data=>{
-    execute(ws,data)
+    execute(wss,ws,data)
   })
 })
 
@@ -59,21 +57,16 @@ app.use('/users', usersRouter);
 
 app.post('/login',loginRouter);
 
-app.post('/login/api/notes/save',saveRouter);
 
-app.get('/login/api/notes/load',loadRouter);
 
-app.get('/post',(req,res)=>{
-  res.render('post')
-})
+
+
 
 app.use('/test',(req,res)=>{
   res.render('mainSystemLayout')
 })
 
-app.use('/hello',(req,res)=>{
-  console.log(wss)
-})
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

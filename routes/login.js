@@ -35,15 +35,15 @@ router.post('/login', (req, res) => {
         console.log("test");
     })
     if(1)//登入成功
-    {   //player = mysqlConnection.query('SELECT * FROM UserData') 菜的id
+    {   //player = mysqlConnection.query('SELECT * FROM user WHERE ')
         let json1 = {'0':1,'1':2,'2':9,'3':13,'4':115}//player.可解鎖
         let arr = []
         for(key in json1)
         {
             arr.push(json1[key])
         }
-        res.render("mainSystemLayout",{count:arr})//引到主業面
-        
+        res.render("mainSystemLayout",{count:arr,name:"hash"})//引到主業面
+
     }
     else//登入失敗
     {
