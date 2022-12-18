@@ -1,56 +1,70 @@
-window.onload=()=>{
-    let ws=new WebSocket($(location).attr('href').replace("https","wss"))
-    let hash = $("#name").html()
-    $("#name").html("name")
-    let player = new Player("name",hash,ws)
+window.onload = () => {
 
-    document.oncontextmenu = function(){
+    let ws = new WebSocket($(location).attr('href').replace("https", "wss"))
+    let hash = $("#name").html()
+    let data = {
+        value: "name",
+        'hash': hash
+    }
+    let json = JSON.stringify({
+        type: "getData",
+        'data': JSON.stringify(data)
+    })
+    $("#name").html("name")
+    let player = new Player("name", hash, ws)
+
+    document.oncontextmenu = function() {
         event.returnValue = false;
     }
-    document.onkeydown=function()
-    {
-        if(window.event && window.event.keyCode==123)
-        {
-            event.keyCode=0;
-            event.returnValue=false;
+    document.onkeydown = function() {
+        if (window.event && window.event.keyCode == 123) {
+            event.keyCode = 0;
+            event.returnValue = false;
         }
     }
-    $("#submit").on('click',()=>{
+    $("#submit").on('click', () => {
         let data = {
-            type:'talk',
-            'data':$("#msg").val()
-        }        
-        ws.send(JSON.stringify(data))
+            value: $("#msg").val(),
+            'hash': hash
+        }
+        data = JSON.stringify(data)
+        let json = { type: 'talk', 'data': data }
+        ws.send(JSON.stringify(json))
     })
-    $("#getmoney").on('click',()=>{
+    $("#getmoney").on('click', () => {
         player.getMoney(50)
     })
-    let foodButtonArray=$(".food")
-    for(let i=0;i<foodButtonArray.length;i++)
-    {
-        foodButtonArray[i].addEventListener('click',()=>{
+    let foodButtonArray = $(".food")
+    for (let i = 0; i < foodButtonArray.length; i++) {
+        foodButtonArray[i].addEventListener('click', () => {
             let data = {
-                type:'buy',
-                data:foodButtonArray[i].id
+                type: 'food',
+                data: foodButtonArray[i].id
             }
             ws.send(JSON.stringify(data))
         })
     }
-    ws.onmessage=(e)=>{
+    ws.onopen = () => { ws.send(json) }
+
+    ws.onmessage = (e) => {
         let response = JSON.parse(e.data)
 
-        switch(response.type)
-        {
+        switch (response.type) {
             case "talkResponse":
-            {
-                console.log(response.data)
-                $("#content").append(response.data+"<br>")
-                break
-            }
+                {
+                    console.log(response.data)
+                    $("#content").append(response.data + "<br>")
+                    break
+                }
             case "errorResponse":
-            {
-                alert("請不要使用主控台。")
-            }
+                {
+                    alert("請不要使用主控台。")
+                    break
+                }
+            case "getDataResponse":
+                {
+                    if (!response.data) alert("你已經在某處登入了")
+                }
         }
 
     }
