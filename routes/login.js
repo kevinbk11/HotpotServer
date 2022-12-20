@@ -72,9 +72,7 @@ router.post('/login', (req, res) => {
             }
         })
     } else { // 創建
-        console.log(data.nickname)
         mysqlConnection.query('SELECT * FROM user', (err, rows, fields) => {
-            console.log(rows[0])
             if (!err) {
                 for (let i = 0; rows[i] != null; i++) { //一個一個搜尋帳號
                     if (rows[i].Account == data.account) {
@@ -84,7 +82,6 @@ router.post('/login', (req, res) => {
                     }
                 }
                 let j = 0
-                console.log("lol")
                 for (j; rows[j] != null; j++) {}
                 let newId = Math.floor(Math.random()*10000)
                 mysqlConnection.query(`SELECT * FROM user WHERE id = ${newId}`,(err,rows2)=>{
@@ -92,12 +89,12 @@ router.post('/login', (req, res) => {
                     {
                         newId = Math.floor(Math.random()*10000)
                         mysqlConnection.query(`SELECT * FROM user WHERE id = ${newId}`,(err,rows3)=>{
-
                         })
                     }
                 })
                 mysqlConnection.query(`INSERT INTO user VALUE (${j+1},'${data.account}','${data.password}','${data.nickname}','${newId}');`)
-
+                mysqlConnection.query(`INSERT INTO userstatus VALUE (${j+1},'${data.nickname}',100,100,100,500,1,0);`)
+                res.render("mainSystemLayout", { count: [1,32,165,321,14], name: newId }) //引到主業面
             } else {
                 console.log(err);
             }

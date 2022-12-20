@@ -1,78 +1,102 @@
 let ws=null
 let id=null
-function jsonStringMaker(type,data)
+class stringJsonBuilder
 {
-    let header = JSON.stringify({'type':type,'id':id,data:data})
-    return header
+    constructor(type)
+    {
+        this.type=type
+        this.data={}
+    }
+    addData(key,value)
+    {
+        this.data[key]=value
+        return this
+    }
+    build()
+    {
+        return JSON.stringify({type:this.type,'id':id,data:JSON.stringify(this.data)})
+    }
+    changeType(type)
+    {
+        this.type=type
+        this.data={}
+        return this
+    }
 }
+let jsonBuilder = new stringJsonBuilder('')
+
+
 window.addEventListener('beforeunload',(e)=>{
     e.preventDefault();
     e.returnValue="hi";
 })
+
 $(window).on('unload',(e)=>{
-    let data = JSON.stringify({value:'exit'})
-    let json = jsonStringMaker('exit',data)
-    console.log(json)
-    ws.send(json)
+    ws.send(jsonBuilder.
+        changeType('exit').
+        addData('value','exit').
+        build())
 })
+
 window.onload = () => {
     ws = new WebSocket($(location).attr('href').replace("https", "wss"))
+
     id = $("#name").html()
     $("#name").html("name")
-    let player = new Player("name", id, ws)
+    let player = null
 
-    let data = {
-        
-    }
-    let json = JSON.stringify({
-        type: "getData",
-        'id':player.id,
-        'data': JSON.stringify(data)
-    })
-    
-    ws.onopen = () => {ws.send(json) }
+    ws.onopen = () => {
+        json = jsonBuilder.changeType('getData').build()
+        ws.send(json)
+     }
+
     document.oncontextmenu = function() {
         event.returnValue = false;
     }
+
     document.onkeydown = function() {
         if (window.event && window.event.keyCode == 123) {
             event.keyCode = 0;
             event.returnValue = false;
         }
     }
+
     $("#submit").on('click', () => {
-        let data = {
-            value: $("#msg").val(),
-        }
-        data = JSON.stringify(data)
-        let json = { type: 'talk','id':player.id,'data': data }
-        ws.send(JSON.stringify(json))
+        json=jsonBuilder.
+        changeType('talk').
+        addData('value',$("#msg").val())
+        ws.send(json.build())
     })
+
     $("#getmoney").on('click', () => {
-        player.getMoney(50)
+        player.setMoneyRequest(50)
     })
+
     let foodButtonArray = $(".food")
     let foodId=0
+
     for (let i = 0; i < foodButtonArray.length; i++) {
         foodButtonArray[i].addEventListener('click', () => {
-            let data = {
-                type: 'food',
-                'id':player.id,
-                data: JSON.stringify({value:JSON.stringify({name:i,'id':foodId,time:5})})
-            }
+            let json = jsonBuilder.
+            changeType('food').
+            addData('name',i).
+            addData('id',foodId).
+            addData('time',5).
+            build()
             foodId++
-            ws.send(JSON.stringify(data))
+            ws.send(json)
         })
     }
 
-
     ws.onmessage = (e) => {
-        let response = JSON.parse(e.data)
 
+        let response = JSON.parse(e.data)
+        let data = JSON.parse(response.data)
         switch (response.type) {
+
             case "talkResponse":
                 {
-                    $("#content").append(response.data + "<br>")
+                    $("#content").append(data.value + "<br>")
                     break
                 }
             case "errorResponse":
@@ -82,14 +106,21 @@ window.onload = () => {
                 }
             case "getDataResponse":
                 {
-                    if(response.data.success)
+
+                    if(data.success)
                     {
-                        $("#name").html(response.data.name)
+                        player=new Player(data.name,id,data.hp,data.sp,data.tp,data.money,data.level,data.exp,ws)
+                        $("#name").html(data.name)
                     }
                     else
                     {
                         alert("你已登入")
                     }
+                    break
+                }
+            case 'setMoneyResponse':
+                {
+                    player.setMoney(data.value)
                 }
         }
 

@@ -10,6 +10,7 @@ class Food
         this.id=id
         this.time=time
         this.startCountDown()  
+
     }
     async startCountDown()
     {
@@ -27,56 +28,109 @@ class Food
             console.log(hotpot)
         })
     }
+
 }
 
-
 let foodid=0
+function jsonType(type){return(type+'Response')}
+class stringJsonBuilder
+{
+    constructor(type)
+    {
+        this.type=jsonType(type)
+        this.data={}
+    }
+    addData(key,value)
+    {
+        this.data[key]=value
+        return this
+    }
+    build()
+    {
+        return JSON.stringify({type:this.type,data:JSON.stringify(this.data)})
+    }
+    changeType(type)
+    {
+        this.type=jsonType(type)
+        this.data={}
+        return this
+    }
+}
 function execute(wss, ws, req) {
-
-    function jsonType(type){return(type+'Response')}
     try {
+
+        let jsonBuilder=new stringJsonBuilder('error')
         let json = JSON.parse(req)
         let data = JSON.parse(json.data)
         let id = json.id
 
         let sqlCommand = `SELECT * FROM user WHERE id = ${id}`
         sql.query(sqlCommand,(err,rows)=>{
-            if(rows.length==0)ws.send(JSON.stringify({type:jsonType('error'),data:false}))
+
+            if(rows.length==0){ws.send(jsonBuilder.
+                addData('value',false).
+                build())
+                console.log(rows)
+            }
         })
         switch (json.type) {
             case "food":{
-                    let value = JSON.parse(data.value)
                     //取得sql上該玩家的資料
                     //判斷能不能買
                     //如果能買 return購買的結果
                     //ws.send(JSON.stringify({ type: 'buyFoodResponse', 'data': false }))
-                    hotpot.push(new Food(value.name,foodid,value.time))
+                    let food = new Food(data.name,foodid,data.time)
+                    hotpot.push(food)
                     foodid++
                     break;
                 }
             case "talk":{
                     let talkData = JSON.parse(json.data)
                     wss.clients.forEach(client => {
-                        client.send(JSON.stringify({ type: jsonType('talk'), 'data': talkData.value }))
+                        
+                        client.send(jsonBuilder.
+                            changeType('talk').
+                            addData('value',talkData.value).
+                            build())
                     })
-                    console.log('test')
                     break;
                 }
-            case "getMoney":{
-                    ws.send(JSON.stringify({ type: jsonType('getMoney'), 'data': true }))
+            case "setMoney":{
+                    sqlCommand = `UPDATE userstatus SET Money = Money + ${data.value} WHERE id = ${id};`
+                    sql.query(sqlCommand,(err,rows)=>{})
+                    ws.send(jsonBuilder.
+                        changeType('setMoney').
+                        addData('value',data.value).
+                        build())
                     break;
                 }
             case "getData":{
                     for (let i = 0; i < loginPlayer.length; i++) {
                         if (loginPlayer[i] == id) {
-                            ws.send(JSON.stringify({ type: jsonType('getData'), 'data': ({success:false}) }))
+                            ws.send(jsonBuilder.
+                                changeType('getData').
+                                addData('success',false).
+                                build())
                             return
                         }
                     }
                     loginPlayer.push(id)
+                    sqlCommand = `SELECT * FROM userstatus WHERE id = ${id}`
                     sql.query(sqlCommand,(err,rows)=>{
-                        ws.send(JSON.stringify({ type: jsonType('getData'), 'data': {success:true,name:rows[0].nickname} }))
+                        let json = jsonBuilder.
+                        changeType('getData').
+                        addData('success',true).
+                        addData('name',rows[0].name).
+                        addData('hp',rows[0].HealthyPoint).
+                        addData('sp',rows[0].SatPoint).
+                        addData('tp',rows[0].ThirstyPoint).
+                        addData('money',rows[0].Money).
+                        addData('level',rows[0].Level).
+                        addData('exp',rows[0].exp).
+                        build()
+                        ws.send(json)
                     })
+                    
                     break;
 
                 }
@@ -89,10 +143,11 @@ function execute(wss, ws, req) {
                         loginPlayer.splice(i,i+1)
                     }
                 }
+                break
             }
         }
-    } catch {
-
+    } catch(e) {
+        console.log(e)
     }
 }
 module.exports = execute
