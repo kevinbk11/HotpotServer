@@ -94,7 +94,7 @@ router.post('/login', (req, res) => {
                 })
                 mysqlConnection.query(`INSERT INTO user VALUE (${j+1},'${data.account}','${data.password}','${data.nickname}','${newId}');`)
                 mysqlConnection.query(`INSERT INTO userstatus VALUE (${j+1},'${data.nickname}',100,100,100,500,1,0);`)
-                res.render("mainSystemLayout", { count: [1,32,165,321,14], name: newId }) //引到主業面
+                res.render("mainSystemLayout", { count: [1,32,165,321,14], name: newId })
             } else {
                 console.log(err);
             }

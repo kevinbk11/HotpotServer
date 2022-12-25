@@ -117,17 +117,12 @@ function execute(wss, ws, req) {
                     loginPlayer.push(id)
                     sqlCommand = `SELECT * FROM userstatus WHERE id = ${id}`
                     sql.query(sqlCommand,(err,rows)=>{
-                        let json = jsonBuilder.
-                        changeType('getData').
-                        addData('success',true).
-                        addData('Name',rows[0].Name).
-                        addData('HealthyPoint',rows[0].HealthyPoint).
-                        addData('SatPoint',rows[0].SatPoint).
-                        addData('ThirstyPoint',rows[0].ThirstyPoint).
-                        addData('Money',rows[0].Money).
-                        addData('Level',rows[0].Level).
-                        addData('Exp',rows[0].Exp).
-                        build()
+                        jsonBuilder.changeType('getData').addData('success',true)
+                        for(k in rows[0])
+                        {
+                            jsonBuilder.addData(k,rows[0][k])
+                        }
+                        json = jsonBuilder.build()
                         ws.send(json)
                     })
                     

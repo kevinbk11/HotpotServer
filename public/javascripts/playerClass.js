@@ -16,7 +16,6 @@ class Player
     start(){
         setInterval(()=>{
             this.SatPoint-=1;
-            console.log(this.sp)
         },5000)
     }
     setMoneyRequest(money)
