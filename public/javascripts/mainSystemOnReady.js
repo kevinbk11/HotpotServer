@@ -1,5 +1,6 @@
 let ws=null
 let id=null
+let player = null
 class stringJsonBuilder
 {
     constructor(type)
@@ -29,13 +30,16 @@ let jsonBuilder = new stringJsonBuilder('')
 window.addEventListener('beforeunload',(e)=>{
     e.preventDefault();
     e.returnValue="hi";
+    let playerData = JSON.stringify(player)
 })
 
 $(window).on('unload',(e)=>{
     ws.send(jsonBuilder.
         changeType('exit').
         addData('value','exit').
-        build())
+        addData('playerData',JSON.stringify(player)).
+        build())    
+
 })
 
 window.onload = () => {
@@ -43,8 +47,6 @@ window.onload = () => {
 
     id = $("#name").html()
     $("#name").html("name")
-    let player = null
-
     ws.onopen = () => {
         json = jsonBuilder.changeType('getData').build()
         ws.send(json)
@@ -84,6 +86,7 @@ window.onload = () => {
             addData('time',5).
             build()
             foodId++
+            player.SatPoint++
             ws.send(json)
         })
     }
@@ -109,8 +112,8 @@ window.onload = () => {
 
                     if(data.success)
                     {
-                        player=new Player(data.name,id,data.hp,data.sp,data.tp,data.money,data.level,data.exp,ws)
-                        $("#name").html(data.name)
+                        player=new Player(data.Name,id,data.HealthyPoint,data.SatPoint,data.ThirstyPoint,data.Money,data.Level,data.Exp,ws)
+                        $("#name").html(data.Name)
                     }
                     else
                     {

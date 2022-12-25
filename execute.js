@@ -120,13 +120,13 @@ function execute(wss, ws, req) {
                         let json = jsonBuilder.
                         changeType('getData').
                         addData('success',true).
-                        addData('name',rows[0].name).
-                        addData('hp',rows[0].HealthyPoint).
-                        addData('sp',rows[0].SatPoint).
-                        addData('tp',rows[0].ThirstyPoint).
-                        addData('money',rows[0].Money).
-                        addData('level',rows[0].Level).
-                        addData('exp',rows[0].exp).
+                        addData('Name',rows[0].Name).
+                        addData('HealthyPoint',rows[0].HealthyPoint).
+                        addData('SatPoint',rows[0].SatPoint).
+                        addData('ThirstyPoint',rows[0].ThirstyPoint).
+                        addData('Money',rows[0].Money).
+                        addData('Level',rows[0].Level).
+                        addData('Exp',rows[0].Exp).
                         build()
                         ws.send(json)
                     })
@@ -139,8 +139,21 @@ function execute(wss, ws, req) {
                 {
                     if(loginPlayer[i]==id)
                     {
-                        console.log(loginPlayer)
                         loginPlayer.splice(i,i+1)
+                        player = JSON.parse(data.playerData)
+                        sqlCommand = `UPDATE userstatus SET `
+                        for(k in player)
+                        {
+                            if(k=='ws' || k=='Name' || k=='ID')continue;
+                            sqlCommand+=(k + "=" + player[k])
+                            if(k!='Exp')sqlCommand+=","
+                            else sqlCommand+=" "
+                        }
+                        sqlCommand+=`WHERE ID = ${player.ID}`
+                        sql.query(sqlCommand,(err,rows)=>{
+                            if(err)console.log(err)
+
+                        })
                     }
                 }
                 break
