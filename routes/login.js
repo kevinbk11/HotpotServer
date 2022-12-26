@@ -39,34 +39,31 @@ router.post('/login', (req, res) => {
     }*/
 
     if (data.nickname == null) { //登入
-        let json1 = { '0': 1, '1': 2, '2': 9, '3': 13, '4': 115 } //player.可解鎖
-        let arr = []
-        for (key in json1) {
-            arr.push(json1[key])
-        }
         mysqlConnection.query('SELECT * FROM user', (err, rows, fields) => {
             var HaveAC = false
             if (!err) {
                 for (let i = 0; rows[i] != null; i++) {
                     if (rows[i].Account == data.account) {
-                        HaveAC = true; //判斷有沒有帳號
                         if (rows[i].Password == data.password) {
-                            let json1 = { '0': 1, '1': 2, '2': 9, '3': 13, '4': 115 } //player.可解鎖
-                            let arr = []
-                            for (key in json1) {
-                                arr.push(json1[key])
-                            }
-                            console.log("Login Success");
+                            mysqlConnection.query(`SELECT * FROM userstatus WHERE ID = ${rows[i].id}`, (err, rows2)=>{
+                                let json1 = JSON.parse(rows2[i].Unlocked)
+                                let arr = []
+                                for (key in json1) {
+                                    arr.push(json1[key])
+                                }
+                                console.log(arr)
+                                res.render("mainSystemLayout", { count: arr, name: rows[i].id }) //引到主業面
 
-                            res.render("mainSystemLayout", { count: arr, name: rows[i].id }) //引到主業面
-                                //正確就引到主頁面
+                            })
                             break
                         }
                     }
+                    res.send('<script>' + 
+                    'alert("登入失敗!請檢查您的帳號密碼。")' + 
+                    '\nwindow.location.href = "/"' +
+                    '</script>')
                 }
-                if (HaveAC == false) {
-                    console.log("testterror")
-                }
+
             } else {
                 console.log(err);
             }
@@ -77,12 +74,23 @@ router.post('/login', (req, res) => {
                 for (let i = 0; rows[i] != null; i++) { //一個一個搜尋帳號
                     if (rows[i].Account == data.account) {
                         //顯示這個帳號已被使用
-                        console.log("Have been used");
+                        res.send('<script>' + 
+                        'alert("這個帳號已經被使用了")' + 
+                        '\nwindow.location.href = "/"' +
+                        '</script>')
+                        return
+                    }
+                    if (rows[i].nickname == data.nickname) {
+                        //顯示這個帳號已被使用
+                        res.send('<script>' + 
+                        'alert("這個暱稱已經被使用了")' + 
+                        '\nwindow.location.href = "/"' +
+                        '</script>')
                         return
                     }
                 }
                 let j = 0
-                for (j; rows[j] != null; j++) {}
+                for (j; rows[j] != null; j++);
                 let newId = Math.floor(Math.random()*10000)
                 mysqlConnection.query(`SELECT * FROM user WHERE id = ${newId}`,(err,rows2)=>{
                     while(rows2.length!=0)
@@ -93,8 +101,8 @@ router.post('/login', (req, res) => {
                     }
                 })
                 mysqlConnection.query(`INSERT INTO user VALUE (${j+1},'${data.account}','${data.password}','${data.nickname}','${newId}');`)
-                mysqlConnection.query(`INSERT INTO userstatus VALUE (${j+1},'${data.nickname}',100,100,100,500,1,0);`)
-                res.render("mainSystemLayout", { count: [1,32,165,321,14], name: newId })
+                mysqlConnection.query(`INSERT INTO userstatus VALUE (${j+1},'${data.nickname}',100,100,100,500,1,0,${newId},'[1,2,3]');`)
+                res.render("mainSystemLayout", { count: [1,2,3], name: newId })
             } else {
                 console.log(err);
             }

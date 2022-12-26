@@ -140,8 +140,8 @@ function execute(wss, ws, req) {
                         for(k in player)
                         {
                             if(k=='ws' || k=='Name' || k=='ID')continue;
-                            sqlCommand+=(k + "=" + player[k])
-                            if(k!='Exp')sqlCommand+=","
+                            sqlCommand+=(`${k}='${player[k]}'`)
+                            if(k!='Unlocked')sqlCommand+=','
                             else sqlCommand+=" "
                         }
                         sqlCommand+=`WHERE ID = ${player.ID}`

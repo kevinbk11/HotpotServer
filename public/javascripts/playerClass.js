@@ -1,6 +1,6 @@
 class Player
 {
-    constructor(name,id,hp,sp,tp,money,level,exp,ws)
+    constructor(name,id,hp,sp,tp,money,level,exp,unlocked,ws)
     {
         this.Name=name
         this.ID=id
@@ -10,6 +10,7 @@ class Player
         this.Money=money
         this.Level=level
         this.Exp=exp
+        this.Unlocked=unlocked
         this.ws=ws
         this.start()
     }
