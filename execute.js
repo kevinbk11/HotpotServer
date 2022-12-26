@@ -16,22 +16,34 @@ class Food
     {
         let p = new Promise(sol=>{
             let id = setInterval(()=>{
-                console.log(`${this.name+":"+this.id}:${--this.time}`)
+                this.time--
+                //console.log(`${this.name+":"+this.id}:${--this.time}`)
                 if(this.time==0){
+                    sql.query(`DELETE FROM hotpot WHERE id = ${this.id}`)
                     clearInterval(id)
                     sol("end")
                 }
             },1000)
         })
         p.then(()=>{
-            hotpot.shift()
-            console.log(hotpot)
+            delete this
         })
     }
 
 }
 
 let foodid=0
+setInterval(()=>{
+
+    for(let index=0;index<hotpot.length;index++)
+    {
+        if(hotpot[index]!=null){
+            console.log(`${hotpot[index].time}:${hotpot[index].id}`)
+            sql.query(`UPDATE hotpot SET time = ${hotpot[index].time} WHERE id = ${hotpot[index].id}`)
+        }
+    }
+
+},1000)
 function jsonType(type){return(type+'Response')}
 class stringJsonBuilder
 {
@@ -70,7 +82,6 @@ function execute(wss, ws, req) {
             if(rows.length==0){ws.send(jsonBuilder.
                 addData('value',false).
                 build())
-                console.log(rows)
             }
         })
         switch (json.type) {
@@ -81,6 +92,8 @@ function execute(wss, ws, req) {
                     //ws.send(JSON.stringify({ type: 'buyFoodResponse', 'data': false }))
                     let food = new Food(data.name,foodid,data.time)
                     hotpot.push(food)
+                    sqlCommand = `INSERT hotpot VALUE('${data.name}',${foodid},${data.time})`
+                    sql.query(sqlCommand,(err,rows)=>{})
                     foodid++
                     break;
                 }

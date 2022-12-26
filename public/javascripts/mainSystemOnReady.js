@@ -1,4 +1,3 @@
-
 class StringJsonBuilder
 {
     constructor(id)
@@ -23,7 +22,16 @@ class StringJsonBuilder
         return this
     }
 }
-
+function FoodArr()
+{
+    let cabbage = new Food(1,'高麗菜',50,60)
+    let pork = new Food(2,'豬肉',80,30)
+    let beef = new Food(3,'牛肉',100,15)
+    let meatball = new Food(4,'貢丸',30,60)
+    let goldenMushroom = new Food(5,'金針菇',40,60)
+    let foodArr = [cabbage,pork,beef,meatball,goldenMushroom]
+    return foodArr
+}
 
 window.addEventListener('beforeunload',(e)=>{
     e.preventDefault();
@@ -84,12 +92,14 @@ window.onload = () => {
         let foodId=0
     
         for (let i = 0; i < foodButtonArray.length; i++) {
+            foodArr = FoodArr()
+            foodButtonArray[i].textContent=foodArr[i].name
             foodButtonArray[i].addEventListener('click', () => {
                 let json = jsonBuilder.
                 changeType('food').
-                addData('name',i).
-                addData('id',foodId).
-                addData('time',5).
+                addData('name',foodArr[i].name).
+                addData('id',foodArr[i].id).
+                addData('time',foodArr[i].time).
                 build()
                 foodId++
                 player.SatPoint++
