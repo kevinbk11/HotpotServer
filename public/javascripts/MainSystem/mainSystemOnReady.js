@@ -41,7 +41,18 @@ window.addEventListener('beforeunload',(e)=>{
 
 
 window.onload = () => {
-
+    var element = new Image;
+    var devtoolsOpen = false;
+    element.__defineGetter__("id", function() {
+        devtoolsOpen = true; // This only executes when devtools is open.
+    });
+    setInterval(function() {
+        devtoolsOpen = false;
+        console.log(element);
+        if (devtoolsOpen == true) {
+            console.log("hi")
+        } // else here if you like to see if dev tools are not open
+    }, 1000);
     try{
         let ws = new WebSocket($(location).attr('href').replace("https", "wss"))
         let player = null
