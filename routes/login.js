@@ -32,7 +32,7 @@ router.post('/login', (req, res) => {
                 for (let i = 0; rows[i] != null; i++) {
                     if (rows[i].Account == data.account) {
                         if (rows[i].Password == data.password) {
-                            res.render('mainSystemLayout',{name:rows[i].nickname})
+                            res.render('mainSystemLayout',{name:rows[i].id})
                             return
                         }
                     }

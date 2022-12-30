@@ -1,4 +1,14 @@
 window.onload = function(){
+
+    document.oncontextmenu = ()=> {
+        window.event.returnValue = false;
+    }
+
+    document.onkeydown = (e)=> {
+        if (e.key == 'F12' || e.key=='F10' ||e.ctrlKey||e.shiftKey||e.key=='I') {
+            return false;
+    }}
+
     const LOGIN_FORM = document.getElementById('loginForm');
     var hasCreate = false;
     const FORM_GROUP = document.querySelectorAll('.form_group');
