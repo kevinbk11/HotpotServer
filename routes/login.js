@@ -15,7 +15,6 @@ var mysqlConnection = mysql.createConnection({
     database: "testdb",
     port: 3306
 })
-var id
 mysqlConnection.connect((err) => {
         if (!err) {
             console.log("worked!")
@@ -26,8 +25,6 @@ mysqlConnection.connect((err) => {
     /* GET home page. */
 router.post('/login', (req, res) => {
 
-
-
     var data = req.body;
     if (data.nickname == null) { //登入
         mysqlConnection.query('SELECT * FROM user', (err, rows, fields) => {
@@ -35,23 +32,17 @@ router.post('/login', (req, res) => {
                 for (let i = 0; rows[i] != null; i++) {
                     if (rows[i].Account == data.account) {
                         if (rows[i].Password == data.password) {
-                            mysqlConnection.query(`SELECT * FROM userstatus WHERE ID = ${rows[i].id}`, (err, rows2)=>{
-                                let json1 = JSON.parse(rows2[i].Unlocked)
-                                let arr = []
-                                for (key in json1) {
-                                    arr.push(json1[key])
-                                }
-                                id = rows[i].id
-                                res.redirect('game')
-                            })
-                            break
+                            res.render('mainSystemLayout',{name:rows[i].nickname})
+                            return
                         }
                     }
-                    res.send('<script>' + 
-                    'alert("登入失敗!請檢查您的帳號密碼。")' + 
-                    '\nwindow.location.href = "/"' +
-                    '</script>')
+
                 }
+                res.send('<script>' + 
+                'alert("登入失敗!請檢查您的帳號密碼。")' + 
+                '\nwindow.location.href = "/"' +
+                '</script>')
+
 
             } else {
                 console.log(err);
@@ -70,7 +61,7 @@ router.post('/login', (req, res) => {
                         return
                     }
                     if (rows[i].nickname == data.nickname) {
-                        //顯示這個帳號已被使用
+                        //顯示這個暱稱已被使用
                         res.send('<script>' + 
                         'alert("這個暱稱已經被使用了")' + 
                         '\nwindow.location.href = "/"' +
@@ -100,5 +91,5 @@ router.post('/login', (req, res) => {
     }
 
 });
-module.exports = {'router':router,'sql':mysqlConnection,'id':id};
+module.exports = {'router':router,'sql':mysqlConnection};
 

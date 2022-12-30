@@ -73,12 +73,28 @@ function execute(wss, ws, req) {
 
         let jsonBuilder=new stringJsonBuilder('error')
         let json = JSON.parse(req)
+
         let data = JSON.parse(json.data)
         let id = json.id
-
         let sqlCommand = `SELECT * FROM user WHERE id = ${id}`
         sql.query(sqlCommand,(err,rows)=>{
-            if(rows.length==0){ws.send(jsonBuilder.
+            if(json.type=='set'){
+                sqlCommand = `SELECT * FROM user WHERE nickname = '${data.name}'`
+                sql.query(sqlCommand,(err,rows1)=>{
+                    if(rows1[0].randomID==-2648)
+                    {
+                        ws.send(jsonBuilder.changeType('set').
+                        addData('id',rows1[0].id).
+                        build())
+                        sqlCommand = `UPDATE user SET randomID = ${data.randomID} WHERE nickname = '${data.name}'`
+                        sql.query(sqlCommand)
+                    }
+                })
+
+            }
+            else if(rows.length==0){
+
+                ws.send(jsonBuilder.
                 addData('value',false).
                 build())
             }
@@ -99,6 +115,7 @@ function execute(wss, ws, req) {
                         client.send(jsonBuilder.
                             changeType('talk').
                             addData('value',talkData.value).
+                            addData('player',talkData.player).
                             build()) 
                     })
                     break;
@@ -159,6 +176,8 @@ function execute(wss, ws, req) {
                         })
                     }
                 }
+                sqlCommand = `UPDATE user SET randomID= -2648 WHERE id=${id}`
+                sql.query(sqlCommand)
                 break
             }
         }

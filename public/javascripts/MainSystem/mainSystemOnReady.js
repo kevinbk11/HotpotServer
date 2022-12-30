@@ -44,9 +44,11 @@ window.onload = () => {
 
     try{
         let ws = new WebSocket($(location).attr('href').replace("https", "wss"))
+        let randomNumber= Math.floor(Math.random()*10000)
         let player = null
-        let id = $("#name").html()
-        let jsonBuilder = new StringJsonBuilder(id)
+        let name = $("#name").html()
+
+        let jsonBuilder = new StringJsonBuilder(randomNumber)
 
         $(window).on('unload',(e)=>{
             ws.send(jsonBuilder.
@@ -71,17 +73,28 @@ window.onload = () => {
     
 
         ws.onopen = () => {
-            json = jsonBuilder.changeType('getData').build()
-            ws.send(json)
+            ws.send(jsonBuilder.
+                changeType('set').
+                addData('randomID',randomNumber).
+                addData('name',name).
+                build())
+        
          }
 
-        $("#name").html("name")
-
+        
+        $("#chatBox").on('keyup',(e)=>{if(e.key=="Enter")$("#chatSubmit").click()})
         $("#chatSubmit").on('click', () => {
-            json=jsonBuilder.
-            changeType('talk').
-            addData('value',$("#chatBox").val())
-            ws.send(json.build())
+            let chatBox = $("#chatBox")
+            if(chatBox.val()!="")
+            {
+                json=jsonBuilder.
+                changeType('talk').
+                addData('value',chatBox.val()).
+                addData('player',player.Name)
+                ws.send(json.build())
+                chatBox.val("");
+            }
+
         })
 
     
@@ -90,23 +103,19 @@ window.onload = () => {
             let response = JSON.parse(e.data)
             let data = JSON.parse(response.data)
             switch (response.type) {
-                case "talkResponse":
-                    {
-                        $("#content").append(player.Name + ":" + data.value + "<br>")
+                case "talkResponse":{
+                        $("#content").append(data.player + ":" + data.value + "<br>")
                         break
                     }
-                case "errorResponse":
-                    {
+                case "errorResponse":{
                         alert("error")
                         break
                     }
-                case "getDataResponse":
-                    {
+                case "getDataResponse": {
     
                         if(data.success)
                         {
                             player=new Player(data.Name,data.ID,data.HealthyPoint,data.SatPoint,data.ThirstyPoint,data.Money,data.Level,data.Exp,data.Unlocked,ws)
-                            $("#name").html(data.Name)
                         }
                         else
                         {
@@ -114,10 +123,14 @@ window.onload = () => {
                         }
                         break
                     }
-                case 'setMoneyResponse':
-                    {
+                case 'setMoneyResponse':{
                         player.setMoney(data.value)
                     }
+                case 'setResponse':{
+                    jsonBuilder.id=data.id
+                    json = jsonBuilder.changeType('getData').build()
+                    ws.send(json)
+                }
             }
     
         }
