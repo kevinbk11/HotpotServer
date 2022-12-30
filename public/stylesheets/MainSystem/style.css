@@ -1,0 +1,249 @@
+*{
+    margin:0;
+    padding:0;
+    font-family: "jf_open";
+}
+@font-face {
+    font-family: "jf_open";
+    src: url('../../font/jf_openhuninn_1_1.ttf') format('truetype');
+}
+body{
+    width:100%;
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content: flex-end;
+    flex-direction: row;
+    background-image: url("../../img/wood_desk.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    overflow: hidden;
+}
+.main{
+    width:100vw;
+    height:100vh;
+    display:flex;
+    justify-content: center;
+    align-items:center;
+}
+
+.infoZone{
+    width: 30vw;
+    height:100vh;
+    /* background-color: chartreuse; */
+    z-index: 0;
+}
+.infoZone .personalDetail .card{
+    width: 80%;
+    height: 12vh;
+    position: relative;
+    background-color: #EAA696;
+    border-radius: 8px;
+    margin: 5% 0% 0% 10%;
+    display: flex;
+    align-items:center;
+    justify-content: space-around;
+    flex-direction: row;
+    box-shadow: inset 4px 0px 2px rgba(0, 0, 0, 0.3);
+}
+.card .levelAndTitle{
+    width: 8vh;
+    height: 89%;
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+}
+.levelAndTitle .title{
+    position: relative;
+    color: #BCE7FD;
+    font-size: 2vh;
+}
+.levelAndTitle .level{
+    width: 8vh;
+    height: 8vh;
+    display: flex;
+    align-items:center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #6F5E53;
+}
+.level p{
+    position: relative;
+    color: #DFE7EB;
+    font-size: 4vh;
+}
+.card .health{
+    width: 70%;
+    height: 89%;
+    display: flex;
+    flex-direction: column;
+}
+.health p{
+    position: relative;
+    color: #BCE7FD;
+    font-size: 5vh;
+}
+.health .healthPoint{
+    width: 100%;
+    height: 3vh;
+    border-radius: 100px;
+    background-color: #BEEF9E;
+}
+.infoZone .menuZone{
+    width: 100%;
+    height: auto;
+}
+.button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color:#ED9390;
+    border:1px solid rgba(111, 94, 83, 0.1);
+    border-radius:360px;
+    font-size:4vh;
+    font-weight:600;
+    color:#BCE7FD;
+    text-decoration:none;
+    text-align: center;
+    cursor: pointer;
+}
+.menuZone .button{
+    margin: 2vh 0vh 0vh 2vh;
+    width:4ex;
+    height:4ex;
+}
+.menuZone .button img{
+    width: 50%;
+    height: 50%;
+}
+
+.playZone{
+    width:44vw;
+    height:100vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: column;
+    /* background-color: darkgreen; */
+    z-index: 1;
+}
+.timer{
+    width: 30vw;
+    height: 10vh;
+    text-align: center;
+    font-size: 4vw;
+    background-color:#6F5E5356;
+    color:#DFE7EB;
+}
+.money{
+    width: 10vw;
+    height: 5vh;
+    text-align: center;
+    font-size: 4vh;
+    border-radius: 50px;
+    background-color:#EAA696;
+    color:#DFE7EB;
+}
+.playZone .hotpot{
+    width: 32vw;
+    height: 32vw;
+    border-width: 25px;
+    border-style: solid;
+    border-color: #131212;
+    border-radius: 50%;
+}
+.online{
+    width:26vw;
+    height:100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-around;
+    /* background-color: green; */
+    z-index: 0;
+}
+.online .match{
+    width: 76%;
+    height: 8vh;
+    margin-right: 3vw;
+    font-size: 7vh;
+    background-color: #E6B89C;
+}
+.online .chat{
+    width: 100%;
+    height: 80%;
+    border-radius: 2em 0em 0em 2em;
+    padding: 1em;
+    background-color: #7b8eb1fb;
+}
+
+#container {
+    top: 50px;
+    width: 100%;
+    height: 90%;
+    display: block;
+    position: relative;
+}
+
+#status-box {
+    text-align: left;
+    font-size: 2em;
+}
+
+#content{
+    top: 50px;  
+    left: 200px;  
+    width: 100%;
+    height: 80%; 
+    border: 1px solid black; 
+    border-radius: 5px; 
+    overflow: auto;
+}
+
+#send-box {
+    width: 100%;
+    text-align: start;
+}
+
+#send-box input {
+    display: inline-block;
+}
+
+#send-box input.error {
+    border: 1px solid red;
+}
+input{
+    height: 2em;
+}
+input[name="name"] {
+    width: 15%;
+}
+
+input[name="msg"] {
+    width: 70%;
+}
+
+input[type="button"] {
+    width: 10%;
+}
+
+.msg {
+    width: 73%;
+    display: inline-block;
+    padding: 5px 0 5px 10px;
+}
+
+.msg>span {
+    width: 25%;
+    display: inline-block;
+}
+
+.msg>span::before {
+    color: darkred;
+    content: " { ";
+}
+
+.msg>span::after {
+    color: darkred;
+    content: " } ";
+}

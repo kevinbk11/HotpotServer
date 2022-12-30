@@ -52,6 +52,7 @@ router.post('/login', (req, res) => {
                                     arr.push(json1[key])
                                 }
                                 console.log(arr)
+                                res.redirect('game')
                                 res.render("mainSystemLayout", { count: arr, name: rows[i].id }) //引到主業面
 
                             })

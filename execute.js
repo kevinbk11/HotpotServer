@@ -78,7 +78,6 @@ function execute(wss, ws, req) {
 
         let sqlCommand = `SELECT * FROM user WHERE id = ${id}`
         sql.query(sqlCommand,(err,rows)=>{
-
             if(rows.length==0){ws.send(jsonBuilder.
                 addData('value',false).
                 build())
@@ -86,10 +85,6 @@ function execute(wss, ws, req) {
         })
         switch (json.type) {
             case "food":{
-                    //取得sql上該玩家的資料
-                    //判斷能不能買
-                    //如果能買 return購買的結果
-                    //ws.send(JSON.stringify({ type: 'buyFoodResponse', 'data': false }))
                     let food = new Food(data.name,foodid,data.time)
                     hotpot.push(food)
                     sqlCommand = `INSERT hotpot VALUE('${data.name}',${foodid},${data.time})`
@@ -104,7 +99,7 @@ function execute(wss, ws, req) {
                         client.send(jsonBuilder.
                             changeType('talk').
                             addData('value',talkData.value).
-                            build())
+                            build()) 
                     })
                     break;
                 }
