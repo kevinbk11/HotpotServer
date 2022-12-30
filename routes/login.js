@@ -15,6 +15,7 @@ var mysqlConnection = mysql.createConnection({
     database: "testdb",
     port: 3306
 })
+var id
 mysqlConnection.connect((err) => {
         if (!err) {
             console.log("worked!")
@@ -28,19 +29,8 @@ router.post('/login', (req, res) => {
 
 
     var data = req.body;
-    /*if(1)//登入成功
-    {   //mysqlConnection.query('SELECT * FROM UserData') 菜的id
-
-        res.redirect("/test")//引到主業面
-    }
-    else//登入失敗
-    {
-        res.redirect("/index.html")
-    }*/
-
     if (data.nickname == null) { //登入
         mysqlConnection.query('SELECT * FROM user', (err, rows, fields) => {
-            var HaveAC = false
             if (!err) {
                 for (let i = 0; rows[i] != null; i++) {
                     if (rows[i].Account == data.account) {
@@ -51,10 +41,8 @@ router.post('/login', (req, res) => {
                                 for (key in json1) {
                                     arr.push(json1[key])
                                 }
-                                console.log(arr)
+                                id = rows[i].id
                                 res.redirect('game')
-                                res.render("mainSystemLayout", { count: arr, name: rows[i].id }) //引到主業面
-
                             })
                             break
                         }
@@ -103,7 +91,7 @@ router.post('/login', (req, res) => {
                 })
                 mysqlConnection.query(`INSERT INTO user VALUE (${j+1},'${data.account}','${data.password}','${data.nickname}','${newId}');`)
                 mysqlConnection.query(`INSERT INTO userstatus VALUE (${j+1},'${data.nickname}',100,100,100,500,1,0,${newId},'[1,2,3]');`)
-                res.render("mainSystemLayout", { count: [1,2,3], name: newId })
+                res.render("mainSystemLayout", { name: newId })
             } else {
                 console.log(err);
             }
@@ -111,29 +99,6 @@ router.post('/login', (req, res) => {
         })
     }
 
-
-
-
-    // mysqlConnection.query(`INSERT INTO userooo VALUE (2,'${data.account}','${data.password}');`)
-    /*mysqlConnection.query('SELECT * FROM user', (err, rows, fields) => {
-            if (!err) {
-                console.log(rows[4].UserName);
-            } else {
-                console.log(err);
-            }
-            console.log("test");
-        })*/
-
-
-
-    
 });
-module.exports = {'router':router,'sql':mysqlConnection};
+module.exports = {'router':router,'sql':mysqlConnection,'id':id};
 
-function createAC() {
-
-}
-
-function loginAC() {
-
-}
