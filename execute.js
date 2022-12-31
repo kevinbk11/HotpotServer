@@ -16,7 +16,6 @@ class Food
         let p = new Promise(sol=>{
             let id = setInterval(()=>{
                 this.time--
-                //console.log(`${this.name+":"+this.id}:${--this.time}`)
                 if(this.time==0){
                     sql.query(`DELETE FROM hotpot WHERE id = ${this.id}`)
                     clearInterval(id)
@@ -98,6 +97,7 @@ function execute(wss, ws, req) {
                         client.send(jsonBuilder.
                             changeType('talk').
                             addData('value',talkData.value).
+                            addData('name',talkData.name).
                             build()) 
                     })
                     break;
@@ -114,6 +114,7 @@ function execute(wss, ws, req) {
             case "getData":{
                     for (let i = 0; i < loginPlayer.length; i++) {
                         if (loginPlayer[i] == id) {
+                            loginPlayer.push(id)
                             ws.send(jsonBuilder.
                                 changeType('getData').
                                 addData('success',false).
@@ -132,7 +133,6 @@ function execute(wss, ws, req) {
                         json = jsonBuilder.build()
                         ws.send(json)
                     })
-                    
                     break;
 
                 }
@@ -159,6 +159,14 @@ function execute(wss, ws, req) {
                     }
                 }
                 break
+            }
+            case "changeOnline":{
+                wss.clients.forEach(client=>{
+                    client.send(jsonBuilder.
+                        changeType('changeOnline').
+                        addData('online',loginPlayer.length).
+                        build())
+                })
             }
         }
     } catch(e) {

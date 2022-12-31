@@ -41,19 +41,9 @@ window.addEventListener('beforeunload',(e)=>{
 
 
 window.onload = () => {
-    var element = new Image;
-    var devtoolsOpen = false;
-    element.__defineGetter__("id", function() {
-        devtoolsOpen = true; // This only executes when devtools is open.
-    });
-    setInterval(function() {
-        devtoolsOpen = false;
-        console.log(element);
-        if (devtoolsOpen == true) {
-            console.log("hi")
-        } // else here if you like to see if dev tools are not open
-    }, 1000);
+
     try{
+        
         let ws = new WebSocket($(location).attr('href').replace("https", "wss"))
         let player = null
         let id = $("#name").html()
@@ -64,32 +54,41 @@ window.onload = () => {
                 changeType('exit').
                 addData('value','exit').
                 addData('playerData',JSON.stringify(player)).
-                build())    
+                build())
+            ws.send(jsonBuilder.
+                changeType('changeOnline').
+                build())
         
         })
 
-        document.oncontextmenu = ()=> {
-            window.event.returnValue = false;
-        }
-    
-        document.onkeydown = (e)=> {
-            if (e.key == 'F12' || e.key=='F10' ||e.ctrlKey||e.shiftKey||e.key=='I') {
-                return false;
-        }}
-    
 
         ws.onopen = () => {
             json = jsonBuilder.changeType('getData').build()
             ws.send(json)
+
          }
 
         $("#name").html("name")
 
+        $("#chatBox").on('keyup',(e)=>{
+            if(e.key=='Enter'){
+                $("#chatSubmit").trigger('click')
+            }
+        })
+
+
         $("#chatSubmit").on('click', () => {
-            json=jsonBuilder.
-            changeType('talk').
-            addData('value',$("#chatBox").val())
-            ws.send(json.build())
+            let chatBox = $("#chatBox")
+            if(chatBox.val()!="")
+            {
+                json=jsonBuilder.
+                changeType('talk').
+                addData('value',chatBox.val()).
+                addData('name',player.Name)
+                ws.send(json.build())
+                chatBox.val("")
+            }
+
         })
 
     
@@ -100,7 +99,39 @@ window.onload = () => {
             switch (response.type) {
                 case "talkResponse":
                     {
-                        $("#content").append(player.Name + ":" + data.value + "<br>")
+                        $("#content").append(`<a class=${data.name} style="color:#3366BB;margin:0px 0px 0px 15px">${data.name}</a>`)
+                        $("#content").append(`<a>:${data.value}<a><br>`)
+                        
+
+                        if($(`.${data.name}`).length==1)
+                        {
+                            $("#content").append(`
+                            <div id="${data.name}Dialog" class=dialog title="對${data.name}玩家的操作">
+                                <input type="button" class=ui-button value="檢舉" id=btn1 style="width:75px">
+                                <br>
+                                <input type="button" class=ui-button value="公投" id=btn2 style="width:75px">
+                            </div>`)
+                            $(`#${data.name}Dialog`).dialog({height:150,width:200,resizable:false,draggable:false,autoOpen:false})
+                            $(`#${data.name}Dialog`).append(`<div class=dialog id=report title="檢舉">你確定要送出檢舉嗎?</>`)
+                            $(`#${data.name}Dialog #report`).dialog({height:200,width:400,autoOpen:false,buttons:{
+                                '是':()=>{
+                                    alert(`已送出對${data.name}玩家的檢舉。`)
+                                    $("#report").dialog('close')
+                                },
+                                '否':()=>{
+                                    $("#report").dialog('close')
+                                },
+                            }})
+                            $(`#${data.name}Dialog #btn1`).on('click',()=>{
+                                $("#report").dialog('open')
+                            })
+                        }
+                        $(`.${data.name}`).last().on('click',(e)=>{
+                            $(".dialog").dialog('close')
+                            $(`#${data.name}Dialog`).dialog('open')
+                            $(`#${data.name}Dialog`).dialog("option","position",{ my: "left top", at: "left bottom", of: e})
+                           
+                        })
                         break
                     }
                 case "errorResponse":
@@ -116,16 +147,25 @@ window.onload = () => {
                             player=new Player(data.Name,data.ID,data.HealthyPoint,data.SatPoint,data.ThirstyPoint,data.Money,data.Level,data.Exp,data.Unlocked,ws)
                             $("#name").html(data.Name)
                             $("#name").css("display","block")
+                            ws.send(jsonBuilder.
+                                changeType('changeOnline').
+                                build())
                         }
                         else
                         {
                             alert("你已登入")
+                            window.location.href='/'
                         }
                         break
                     }
                 case 'setMoneyResponse':
                     {
                         player.setMoney(data.value)
+                        break;
+                    }
+                case 'changeOnlineResponse':
+                    {
+                        $('#online').text(data.online)
                     }
             }
     
