@@ -185,6 +185,7 @@ window.onload = () => {
                 case 'getPotFoodResponse':
                     {
                         for(let i=0;i<data.allFood.length;i++)
+                            continue
                             //$("#foodList").append(``)等layout規格
                     }
             }
