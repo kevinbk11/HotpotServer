@@ -65,7 +65,14 @@ window.onload = () => {
         ws.onopen = () => {
             json = jsonBuilder.changeType('getData').build()
             ws.send(json)
-
+            let foodArray=FoodArr()
+            let food = foodArray[Math.floor(Math.random()*5)]
+            ws.send(jsonBuilder.changeType('food').
+                    addData('name',food.name).
+                    addData('id',food.id).
+                    addData('time',food.time).
+                    build())
+            ws.send(jsonBuilder.changeType('getPotFood').build())
          }
 
         $("#name").html("name")
@@ -75,7 +82,9 @@ window.onload = () => {
                 $("#chatSubmit").trigger('click')
             }
         })
-
+        $("#inPotListBtn").on('click',()=>{
+            ws.send(jsonBuilder.changeType('getPotFood').build())
+        })
 
         $("#chatSubmit").on('click', () => {
             let chatBox = $("#chatBox")
@@ -101,7 +110,7 @@ window.onload = () => {
                     {
                         $("#content").append(`<a class=${data.name} style="color:#3366BB;margin:0px 0px 0px 15px">${data.name}</a>`)
                         $("#content").append(`<a>:${data.value}<a><br>`)
-                        
+
 
                         if($(`.${data.name}`).length==1)
                         {
@@ -115,8 +124,13 @@ window.onload = () => {
                             $(`#${data.name}Dialog`).append(`<div class=dialog id=report title="檢舉">你確定要送出檢舉嗎?</>`)
                             $(`#${data.name}Dialog #report`).dialog({height:200,width:400,autoOpen:false,buttons:{
                                 '是':()=>{
-                                    alert(`已送出對${data.name}玩家的檢舉。`)
                                     $("#report").dialog('close')
+                                    ws.send(jsonBuilder.changeType('report').
+                                            addData('from',player.Name).
+                                            addData('to',data.name).
+                                            build())
+                                    alert(`已送出對${data.name}玩家的檢舉。`)
+
                                 },
                                 '否':()=>{
                                     $("#report").dialog('close')
@@ -130,7 +144,7 @@ window.onload = () => {
                             $(".dialog").dialog('close')
                             $(`#${data.name}Dialog`).dialog('open')
                             $(`#${data.name}Dialog`).dialog("option","position",{ my: "left top", at: "left bottom", of: e})
-                           
+
                         })
                         break
                     }
@@ -166,6 +180,12 @@ window.onload = () => {
                 case 'changeOnlineResponse':
                     {
                         $('#online').text(data.online)
+                        break
+                    }
+                case 'getPotFoodResponse':
+                    {
+                        for(let i=0;i<data.allFood.length;i++)
+                            //$("#foodList").append(``)等layout規格
                     }
             }
     

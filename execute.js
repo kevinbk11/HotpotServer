@@ -23,9 +23,6 @@ class Food
                 }
             },1000)
         })
-        p.then(()=>{
-            delete this
-        })
     }
 
 }
@@ -36,8 +33,11 @@ setInterval(()=>{
     for(let index=0;index<hotpot.length;index++)
     {
         if(hotpot[index]!=null){
-            console.log(`${hotpot[index].time}:${hotpot[index].id}`)
-            sql.query(`UPDATE hotpot SET time = ${hotpot[index].time} WHERE id = ${hotpot[index].id}`)
+            if(hotpot[index].time==0)delete hotpot[index]
+            else{
+                //console.log(`${hotpot[index].time}:${hotpot[index].id}`)
+                sql.query(`UPDATE hotpot SET time = ${hotpot[index].time} WHERE id = ${hotpot[index].id}`)
+            } 
         }
     }
 
@@ -166,6 +166,19 @@ function execute(wss, ws, req) {
                         changeType('changeOnline').
                         addData('online',loginPlayer.length).
                         build())
+                })
+                break
+            }
+            case "report":{
+                console.log(data.from+":"+data.to)
+                break
+            }
+            case "getPotFood":{
+                sqlCommand="SELECT * FROM hotpot"
+                sql.query(sqlCommand,(err,rows)=>{
+                    if(err)console.log(err)
+                    ws.send(jsonBuilder.changeType('getPotFood').
+                            addData('allFood',rows).build())
                 })
             }
         }
