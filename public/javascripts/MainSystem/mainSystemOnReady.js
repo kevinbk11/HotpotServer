@@ -34,9 +34,14 @@ function FoodArr()
 }
 
 
-
+window.addEventListener("popstate",function(e) {  
+    window.open($(this.location).attr('href').replace('game',''),'_self','');
+    for(let i =0;i<20;i++)history.pushState(null, null, document.URL);
+}, false);
 
 window.onload = () => {
+
+    for(let i =0;i<20;i++)history.pushState(null, null, document.URL);
 
     try{
         
@@ -44,7 +49,7 @@ window.onload = () => {
         let player = null
         let id = $("#name").html()
         let jsonBuilder = new StringJsonBuilder(id)
-
+        console.log("?")
         $(window).on('unload',(e)=>{
             ws.send(jsonBuilder.
                 changeType('exit').

@@ -3,6 +3,7 @@ var router = express.Router();
 var id=-1
 router.post('/game',(req,res)=>{
     id=req.body.id
+    console.log(req.body.id)
     res.render('mainSystemLayout',{name:id})
 })
 router.get('/game',(req,res)=>{

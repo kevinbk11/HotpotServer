@@ -28,6 +28,7 @@ function goToMain(id,req,res){
     var clientServerOptions = {
         uri: 'https://'+req.hostname+'/game',
         body: JSON.stringify({'id':id}),
+        cache:false,
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
