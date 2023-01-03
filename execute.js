@@ -161,6 +161,7 @@ function execute(wss, ws, req) {
                 break
             }
             case "changeOnline":{
+                console.log(loginPlayer)
                 wss.clients.forEach(client=>{
                     client.send(jsonBuilder.
                         changeType('changeOnline').

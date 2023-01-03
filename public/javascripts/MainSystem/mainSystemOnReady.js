@@ -33,10 +33,6 @@ function FoodArr()
     return foodArr
 }
 
-window.addEventListener('beforeunload',(e)=>{
-    e.preventDefault();
-    e.returnValue="hi";
-})
 
 
 
@@ -97,9 +93,16 @@ window.onload = () => {
                 ws.send(json.build())
                 chatBox.val("")
             }
-
         })
+        $(".button.match").on('click',()=>{
 
+            $.post($(location).attr('href')+"/game1",{'id':id},(data,textStatue,jqXHR)=>{
+                console.log(data)
+                $('body').html(data)
+                $('head').html(data)
+            })
+            //post($(location).attr(href))
+        })
     
         ws.onmessage = (e) => {
     
@@ -193,7 +196,5 @@ window.onload = () => {
         }
     }
     catch{
-
     }
-
 }

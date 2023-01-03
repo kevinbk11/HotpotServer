@@ -10,6 +10,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login');
 var gameRouter = require('./routes/game')
+var game1Router = require('./routes/game1')
 
 var app = express();
 
@@ -61,10 +62,13 @@ app.use('/users', usersRouter);
 
 app.post('/login', loginRouter.router);
 
-app.get('/game',gameRouter);
+app.post('/game',gameRouter);
 
+app.get('/game',gameRouter)
 
+app.post('/game/game1',game1Router)
 
+app.get('/game/game1',game1Router)
 
 app.use('/test', (req, res) => {
     res.render('mainSystemLayout')

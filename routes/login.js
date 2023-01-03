@@ -7,6 +7,7 @@ const { render } = require('../app');
 const app = require('../app');
 var router = express.Router();
 const mysql = require('mysql');
+var request = require('request');
 
 var mysqlConnection = mysql.createConnection({
     host: 'localhost',
@@ -23,6 +24,20 @@ mysqlConnection.connect((err) => {
         }
     })
     /* GET home page. */
+function goToMain(id,req,res){
+    var clientServerOptions = {
+        uri: 'https://'+req.hostname+'/game',
+        body: JSON.stringify({'id':id}),
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    request(clientServerOptions, function (error, response) {
+        res.redirect('/game')
+        return;
+    });
+}
 router.post('/login', (req, res) => {
 
     var data = req.body;
@@ -32,7 +47,7 @@ router.post('/login', (req, res) => {
                 for (let i = 0; rows[i] != null; i++) {
                     if (rows[i].Account == data.account) {
                         if (rows[i].Password == data.password) {
-                            res.render('mainSystemLayout',{name:rows[i].id})
+                            goToMain(rows[i].id,req,res)
                             return
                         }
                     }
@@ -81,7 +96,7 @@ router.post('/login', (req, res) => {
                 })
                 mysqlConnection.query(`INSERT INTO user VALUE (${j+1},'${data.account}','${data.password}','${data.nickname}','${newId}');`)
                 mysqlConnection.query(`INSERT INTO userstatus VALUE (${j+1},'${data.nickname}',100,100,100,500,1,0,${newId},'[1,2,3]');`)
-                res.render("mainSystemLayout", { name: newId })
+                goToMain(newId,req,res)
             } else {
                 console.log(err);
             }
