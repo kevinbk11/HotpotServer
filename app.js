@@ -8,8 +8,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var loginRouter = require('./routes/login');
-var gameRouter = require('./routes/game')
+var gameRouter = require('./routes/game');
 var game1Router = require('./routes/game1')
 
 var app = express();
@@ -60,11 +59,7 @@ app.use('/', indexRouter);
 
 app.use('/users', usersRouter);
 
-app.post('/login', loginRouter.router);
-
-app.post('/game',gameRouter);
-
-app.get('/game',gameRouter)
+app.post('/game', gameRouter.router);
 
 app.post('/game/game1',game1Router)
 

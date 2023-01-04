@@ -34,14 +34,11 @@ function FoodArr()
 }
 
 
-window.addEventListener("popstate",function(e) {  
-    window.open($(this.location).attr('href').replace('game',''),'_self','');
-    for(let i =0;i<20;i++)history.pushState(null, null, document.URL);
-}, false);
+
 
 window.onload = () => {
 
-    for(let i =0;i<20;i++)history.pushState(null, null, document.URL);
+
 
     try{
         
@@ -101,11 +98,10 @@ window.onload = () => {
         })
         $(".button.match").on('click',()=>{
 
-            $.post($(location).attr('href')+"/game1",{'id':id},(data,textStatue,jqXHR)=>{
-                console.log(data)
-                $('body').html(data)
-                $('head').html(data)
-            })
+            $.get("index2.html", function(html_string){
+                $('head').html(html_string)
+                $('body').html(html_string)
+            },'html'); 
             //post($(location).attr(href))
         })
     

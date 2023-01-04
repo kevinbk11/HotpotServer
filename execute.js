@@ -1,6 +1,6 @@
 let loginPlayer = []
 let hotpot = []
-var sql = require("./routes/login").sql
+var sql = require("./routes/game").sql
 class Food
 {
     constructor(name,id,time)

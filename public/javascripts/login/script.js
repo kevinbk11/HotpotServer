@@ -1,10 +1,7 @@
-window.addEventListener("popstate",function(e) {  
-    window.open($(this.location).attr('href'),'_self','');
-    for(let i =0;i<20;i++)history.pushState(null, null, document.URL);
-}, false);
+
 
 window.onload = function(){
-    for(let i =0;i<20;i++)history.pushState(null, null, document.URL);
+
     const LOGIN_FORM = document.getElementById('loginForm');
     var hasCreate = false;
     const FORM_GROUP = document.querySelectorAll('.form_group');
