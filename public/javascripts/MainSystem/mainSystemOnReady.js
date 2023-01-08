@@ -45,6 +45,7 @@ window.onload = () => {
         let ws = new WebSocket($(location).attr('href').replace("https", "wss"))
         let player = null
         let id = $("#name").html()
+        $("#name").css("display","none")
         let jsonBuilder = new StringJsonBuilder(id)
         console.log("?")
         $(window).on('unload',(e)=>{
@@ -73,7 +74,7 @@ window.onload = () => {
             ws.send(jsonBuilder.changeType('getPotFood').build())
          }
 
-        $("#name").html("name")
+        $("#name").html("")
 
         $("#chatBox").on('keyup',(e)=>{
             if(e.key=='Enter'){
@@ -118,6 +119,7 @@ window.onload = () => {
 
                         if($(`.${data.name}`).length==1)
                         {
+                            console.log(data.name)
                             $("#content").append(`
                             <div id="${data.name}Dialog" class=dialog title="對${data.name}玩家的操作">
                                 <input type="button" class=ui-button value="檢舉" id=btn1 style="width:75px">
@@ -125,10 +127,10 @@ window.onload = () => {
                                 <input type="button" class=ui-button value="公投" id=btn2 style="width:75px">
                             </div>`)
                             $(`#${data.name}Dialog`).dialog({height:150,width:200,resizable:false,draggable:false,autoOpen:false})
-                            $(`#${data.name}Dialog`).append(`<div class=dialog id=report title="檢舉">你確定要送出檢舉嗎?</>`)
-                            $(`#${data.name}Dialog #report`).dialog({height:200,width:400,autoOpen:false,buttons:{
+                            $(`#${data.name}Dialog`).append(`<div class=dialog id=${data.name}Report title="檢舉">你確定要送出檢舉嗎?</>`)
+                            $(`#${data.name}Dialog #${data.name}Report`).dialog({height:200,width:400,autoOpen:false,buttons:{
                                 '是':()=>{
-                                    $("#report").dialog('close')
+                                    $(`#${data.name}Report`).dialog('close')
                                     ws.send(jsonBuilder.changeType('report').
                                             addData('from',player.Name).
                                             addData('to',data.name).
@@ -137,11 +139,11 @@ window.onload = () => {
 
                                 },
                                 '否':()=>{
-                                    $("#report").dialog('close')
+                                    $(`#${data.name}Report`).dialog('close')
                                 },
                             }})
                             $(`#${data.name}Dialog #btn1`).on('click',()=>{
-                                $("#report").dialog('open')
+                                $(`#${data.name}Report`).dialog('open')
                             })
                         }
                         $(`.${data.name}`).last().on('click',(e)=>{

@@ -2,32 +2,48 @@ doctype html
 html(lang='en')
   head
     meta(charset='UTF-8')
-    meta(HTTP-EQUIV="pragma" CONTENT="no-cache")
-    meta(HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate")
-    meta(HTTP-EQUIV="expires" CONTENT="0")
+    meta(http-equiv='pragma' content='no-cache')
+    meta(http-equiv='Cache-Control' content='no-cache, must-revalidate')
+    meta(http-equiv='expires' content='0')
     title Online hotpot
     meta(name='viewport' content='width=device-width, initial-scale=1.0')
     link(href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet')
     link(href='stylesheets\\MainSystem\\style.css' rel='stylesheet' type='text/css')
-    link(rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css")
-    script(src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous")
-    script(src="javascripts/MainSystem/mainSystemOnReady.js")
-    script(src="javascripts/MainSystem/FoodClass.js")
-    script(src="javascripts/MainSystem/PlayerClass.js")
-    //script(disable-devtool-auto src="https://cdn.jsdelivr.net/npm/disable-devtool")
-    script( src="https://code.jquery.com/ui/1.13.2/jquery-ui.js" integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c=" crossorigin="anonymous")
+    link(rel='stylesheet' href='https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css')
+    script(src='https://code.jquery.com/jquery-3.6.3.js' integrity='sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=' crossorigin='anonymous')
+    script(src='javascripts/MainSystem/mainSystemOnReady.js')
+    script(src='javascripts/MainSystem/FoodClass.js')
+    script(src='javascripts/MainSystem/PlayerClass.js')
+    // <script disable-devtool-auto src="https://cdn.jsdelivr.net/npm/disable-devtool"></script>
+    script(src='https://code.jquery.com/ui/1.13.2/jquery-ui.js' integrity='sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c=' crossorigin='anonymous')
+    link(href='style.css' rel='stylesheet' type='text/css')
   body
     .main
+      .record(tabindex='0')
+        .playerInfo 個人資訊
+        .history 遊玩紀錄
+        .achievement 成就
       .infoZone
         .personalDetail
           .card
             .levelAndTitle
-              .level
+              .button.level
                 p.number 1
               p.title NOOB
-            .health
-              p(id='name' style="display:none") #{name}
-              .healthPoint
+            .status
+              p#name #{name}
+              .health.inRow
+                .bar_base
+                  .bar.hp
+                i.bx.bxs-heart.bar_icon(style='color:#cf1a1a')
+              .hungry.inRow
+                .bar_base
+                  .bar.sp
+                i.bx.bxs-baguette.bar_icon(style='color:#8c2f08')
+              .thirst.inRow
+                .bar_base
+                  .bar.wp
+                i.bx.bxs-droplet.bar_icon(style='color:#0d62de')
         .menuZone
           .button
             img#materialMenu(src='img/line.png')
@@ -38,7 +54,7 @@ html(lang='en')
         .money 0$
         .hotpot
       .online
-        .button.match 匹配
+        .button.match 小遊戲
         .chat
           #container
             #status-box
@@ -49,5 +65,23 @@ html(lang='en')
               |  online.
             #content
             #send-box
-                input#chatBox(type='text' placeholder='說點什麼？')
-                input#chatSubmit(type='button' value='送出')
+              input#chatBox(type='text' placeholder='說點什麼？')
+              input#chatSubmit(type='button' value='送出')
+    script.
+      const LEVEL = document.querySelector('.level');
+      const  RECORD = document.querySelector('.record');
+      LEVEL.addEventListener('click', ()=>{
+      console.log(1);
+      RECORD.classList.add('visible');
+      RECORD.focus();
+      })
+      RECORD.addEventListener('focusout', ()=>{
+      console.log(0);
+      RECORD.classList.remove('visible');
+      })
+      const HP = document.querySelector('.hp');
+      HP.setAttribute('style', 'width: 20%');
+      const SP = document.querySelector('.sp');
+      SP.setAttribute('style', 'width: 40%');
+      const WP = document.querySelector('.wp');
+      WP.setAttribute('style', 'width: 60%');

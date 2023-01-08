@@ -20,6 +20,7 @@ body{
     overflow: hidden;
 }
 .main{
+    position: relative;
     width:100vw;
     height:100vh;
     display:flex;
@@ -27,6 +28,32 @@ body{
     align-items:center;
 }
 
+.inRow{
+    display:flex;
+    align-items:center;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.record{
+    position: absolute;
+    visibility: hidden;
+}
+.record.visible{
+    visibility: visible;
+    position: absolute;
+    width: 10%;
+    height: 20%;
+    background-color: #C9E0B2;
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    flex-direction: column;
+    padding: 0.5%;
+    box-sizing: border-box;
+    font-size: xx-large;
+    z-index: 2;
+}
 .infoZone{
     width: 30vw;
     height:100vh;
@@ -34,8 +61,8 @@ body{
     z-index: 0;
 }
 .infoZone .personalDetail .card{
-    width: 80%;
-    height: 12vh;
+    width: 85%;
+    height: 22vh;
     position: relative;
     background-color: #EAA696;
     border-radius: 8px;
@@ -55,7 +82,7 @@ body{
 }
 .levelAndTitle .title{
     position: relative;
-    color: #BCE7FD;
+    color: #131515;
     font-size: 2vh;
 }
 .levelAndTitle .level{
@@ -65,29 +92,59 @@ body{
     align-items:center;
     justify-content: center;
     border-radius: 50%;
-    background-color: #6F5E53;
+    background-color: #483C3253;
 }
 .level p{
     position: relative;
     color: #DFE7EB;
     font-size: 4vh;
 }
-.card .health{
+.card .status{
     width: 70%;
     height: 89%;
     display: flex;
+    justify-content: space-around;
     flex-direction: column;
 }
-.health p{
+.status p{
     position: relative;
-    color: #BCE7FD;
+    color: #131515;
     font-size: 5vh;
 }
-.health .healthPoint{
+.status i{
+    font-size: 4.2vh;
+    margin-left: 0.3vw;
+}
+.status .bar_base{
+    width: 90%;
+    height: 3vh;
+    display: flex;
+    align-items:center;
+    border-radius: 100px;
+    border: 5px groove #4f55587c;
+}
+.status .bar{
     width: 100%;
     height: 3vh;
-    border-radius: 100px;
-    background-color: #BEEF9E;
+    border-radius: 300px;
+}
+.health .bar_base{
+    background-color: #812336;
+}
+.health .bar{
+    background-color: #CB0D32;
+}
+.hungry .bar_base{
+    background-color: #8D563F;
+}
+.hungry .bar{
+    background-color: #CC5E2F;
+}
+.thirst .bar_base{
+    background-color: #256986;
+}
+.thirst .bar{
+    background-color: #00A1E4;
 }
 .infoZone .menuZone{
     width: 100%;
@@ -102,7 +159,7 @@ body{
     border-radius:360px;
     font-size:4vh;
     font-weight:600;
-    color:#BCE7FD;
+    color:#131515;
     text-decoration:none;
     text-align: center;
     cursor: pointer;
@@ -118,7 +175,7 @@ body{
 }
 
 .playZone{
-    width:44vw;
+    width:40vw;
     height:100vh;
     display: flex;
     align-items: center;
@@ -132,7 +189,7 @@ body{
     height: 10vh;
     text-align: center;
     font-size: 4vw;
-    background-color:#6F5E5356;
+    background-color:#483C3256;
     color:#DFE7EB;
 }
 .money{
@@ -152,8 +209,9 @@ body{
     border-color: #131212;
     border-radius: 50%;
 }
+
 .online{
-    width:26vw;
+    width:30vw;
     height:100vh;
     display: flex;
     flex-direction: column;
@@ -166,7 +224,7 @@ body{
     width: 76%;
     height: 8vh;
     margin-right: 3vw;
-    font-size: 7vh;
+    font-size: 3vw;
     background-color: #E6B89C;
 }
 .online .chat{

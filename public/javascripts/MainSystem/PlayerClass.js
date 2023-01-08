@@ -14,9 +14,13 @@ class Player
         this.ws=ws
         this.start()
     }
-    start(){
+    start(){ 
+        $(".bar.sp").css("width",`${this.SatPoint}%`)
+        $(".bar.hp").css("width",`${this.HealthyPoint}%`)
+        $(".bar.wp").css("width",`${this.ThirstyPoint}%`)
         setInterval(()=>{
             this.SatPoint-=1;
+            $(".bar.sp").css("width",`${this.SatPoint}%`)
         },5000)
     }
     setMoneyRequest(money)
