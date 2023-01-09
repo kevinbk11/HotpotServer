@@ -22,16 +22,7 @@ class StringJsonBuilder
         return this
     }
 }
-function FoodArr()
-{
-    let cabbage = new Food(1,'高麗菜',50,60)
-    let pork = new Food(2,'豬肉',80,30)
-    let beef = new Food(3,'牛肉',100,15)
-    let meatball = new Food(4,'貢丸',30,60)
-    let goldenMushroom = new Food(5,'金針菇',40,60)
-    let foodArr = [cabbage,pork,beef,meatball,goldenMushroom]
-    return foodArr
-}
+
 
 
 
@@ -46,6 +37,11 @@ window.onload = () => {
         let player = null
         let id = $("#name").html()
         $("#name").css("display","none")
+        let foodListDialog=$(".mod-tab").dialog({title:'菜單',height:600,width:800,resizable:false,draggable:false,autoOpen:true});
+        foodListDialog.prev(".ui-dialog-titlebar").css("background","#FFDEAD")
+        console.log(foodListDialog.parent().css('padding','0em'))
+        foodListDialog.css("background","#FFDEAD")
+        //$('.mod-tab .content #1 tbody').append("<tr><td><input type='button' style='background-image:;width:100px;height:100px;'></td><td><input type='button' style='background-image:;width:100px;height:100px;'></td></tr>")
         let jsonBuilder = new StringJsonBuilder(id)
         console.log("?")
         $(window).on('unload',(e)=>{
@@ -64,14 +60,13 @@ window.onload = () => {
         ws.onopen = () => {
             json = jsonBuilder.changeType('getData').build()
             ws.send(json)
-            let foodArray=FoodArr()
-            let food = foodArray[Math.floor(Math.random()*5)]
-            ws.send(jsonBuilder.changeType('food').
-                    addData('name',food.name).
-                    addData('id',food.id).
-                    addData('time',food.time).
-                    build())
-            ws.send(jsonBuilder.changeType('getPotFood').build())
+            
+            /*ws.send(jsonBuilder.changeType('food').
+                    addData('foodid',1).build())
+            setTimeout(()=>{
+                ws.send(jsonBuilder.changeType('eat').
+                        addData('queueID',0).build())
+                    },5000)*/
          }
 
         $("#name").html("")
@@ -165,6 +160,31 @@ window.onload = () => {
                         if(data.success)
                         {
                             player=new Player(data.Name,data.ID,data.HealthyPoint,data.SatPoint,data.ThirstyPoint,data.Money,data.Level,data.Exp,data.Unlocked,ws)
+
+                            let foodListHtml = ""
+                            let unlocked=JSON.parse(data.Unlocked)
+                            for(let i = 0;i<unlocked.length;i++)
+                            {
+                                if(i%2==0)
+                                {
+                                    foodListHtml+="<tr>"
+                                }
+                                let food = getFood(unlocked[i])
+                                foodListHtml+=`<td>${food.name}<br><input id="food${food.foodID}" type='button' style="background-image:;width:100px;height:100px"></td>`
+                                if(i%2==1)
+                                {
+                                    foodListHtml+="</tr>"
+                                }
+                            }
+                            $('.mod-tab .content #1 tbody').append(foodListHtml)
+                            for(let i = 0;i<unlocked.length;i++)
+                            {
+                                $(`.mod-tab .content #food${i+1}`).on('click',()=>{
+                                    ws.send(jsonBuilder.changeType('food').
+                                            addData('foodid',i+1).
+                                            build())
+                                })
+                            }
                             $("#name").html(data.Name)
                             $("#name").css("display","block")
                             ws.send(jsonBuilder.
@@ -191,8 +211,10 @@ window.onload = () => {
                 case 'getPotFoodResponse':
                     {
                         for(let i=0;i<data.allFood.length;i++)
-                            continue
-                            //$("#foodList").append(``)等layout規格
+                        {
+                           //$("#foodList").append(``)
+                        }
+
                     }
             }
     
