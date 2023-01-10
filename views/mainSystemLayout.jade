@@ -14,9 +14,10 @@ html(lang='en')
     script(src='javascripts/MainSystem/mainSystemOnReady.js')
     script(src='javascripts/MainSystem/FoodClass.js')
     script(src='javascripts/MainSystem/PlayerClass.js')
+    script(src='javascripts/MainSystem/StringJsonBuilder.js')
+    script(src='javascripts/MainSystem/ResponseEventListener.js')
     // <script disable-devtool-auto src="https://cdn.jsdelivr.net/npm/disable-devtool"></script>
     script(src='https://code.jquery.com/ui/1.13.2/jquery-ui.js' integrity='sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c=' crossorigin='anonymous')
-    link(href='style.css' rel='stylesheet' type='text/css')
     style.
       /*選擇按鈕*/
       .mod-tab .tab
@@ -128,12 +129,11 @@ html(lang='en')
                   .bar.wp
                 i.bx.bxs-droplet.bar_icon(style='color:#0d62de')
         .menuZone
-          .button
+          .button#buy
             img#materialMenu(src='img/line.png')
-          .button
+          .button#foodList
             img#hotpotInfo(src='img/hotpot.png')
       .playZone
-        .timer(data-time='0') 00:00
         .money 0$
         .hotpot
       .online

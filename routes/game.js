@@ -82,7 +82,7 @@ router.post('/game', (req, res) => {
                     }
                 })
                 mysqlConnection.query(`INSERT INTO user VALUE (${j+1},'${data.account}','${data.password}','${data.nickname}','${newId}');`)
-                mysqlConnection.query(`INSERT INTO userstatus VALUE (${j+1},'${data.nickname}',100,100,100,500,1,0,${newId},'[1,2,3]');`)
+                mysqlConnection.query(`INSERT INTO userstatus VALUE (${j+1},'${data.nickname}',100,100,100,130,1,0,${newId});`)
                 res.render('mainSystemLayout',{name:newId})
             } else {
                 console.log(err);
