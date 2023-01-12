@@ -75,7 +75,7 @@ function listenerStart(jsonBuilder)
                         foodListHtml+="<tr>"
                     }
                     let food = unlocked[i]
-                    foodListHtml+=`<td>${food.name}${food.money}$<br><input id="food${food.foodID}" type='button' style="background-image:;width:100px;height:100px"><br>煮${food.needTime}秒</td>`
+                    foodListHtml+=`<td>${food.name}${food.money}$<br><input id="food${food.foodID}" type='button' style="background-image:url('../../img/food/food${food.foodID}.jpg');background-size: 100px 100px;width:100px;height:100px"><br>煮${food.needTime}秒</td>`
                     if(i%2==1)
                     {
                         foodListHtml+="</tr>"

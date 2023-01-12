@@ -5,7 +5,6 @@ window.onload = () => {
     try{
         let player = null
         $(document).on('setPlayer',(e,data)=>{
-            console.log(data)
             player=data
         })
 
@@ -77,10 +76,10 @@ window.onload = () => {
         })
 
         $(".button.match").on('click',()=>{
-            $.get("index2.html", function(html_string){
+            /*$.get("index2.html", function(html_string){
                 $('head').html(html_string)
                 $('body').html(html_string)
-            },'html'); 
+            },'html'); */
 
         })
 

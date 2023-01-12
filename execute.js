@@ -1,42 +1,32 @@
-let loginPlayer = []
-let hotpot = []
 const sql = require("./routes/game").sql
-const Food = require("./Food").Food
-const getFood = require("./Food").getFood 
 const StringJsonBuilder = require("./StringJsonBuilder")
-let queueID=0
+const listener = require('./RequestEventListener')
 
-sqlCommand='SELECT * FROM hotpot'
-sql.query(sqlCommand,(err,rows)=>{
-    for(let i = 0;i<rows.length;i++)
-    {
-        let foodID = rows[i].foodID
-        let food=getFood(foodID)
-        food.queueID=rows[i].queueID
-        food.nowTime=rows[i].nowTime
-        food.who=rows[i].who
-        food.startCountDown()
-        hotpot.push(food)
-    }
-})
+
+
 
 
 
 function execute(wss, ws, req) {
     try {
-        let jsonBuilder=new StringJsonBuilder('error')
+        const jsonBuilder=new StringJsonBuilder('error')
         let json = JSON.parse(req)
         let data = JSON.parse(json.data)
         let id = json.id
 
         let sqlCommand = `SELECT * FROM user WHERE id = ${id}`
         sql.query(sqlCommand,(err,rows)=>{
-            if(rows.length==0){ws.send(jsonBuilder.
+            if(rows.length==0){
+                ws.send(jsonBuilder.
                 addData('value',false).
                 build())
             }
+            else 
+            {
+                listener.trigger(json.type,wss,ws,json)
+            }
         })
-        switch (json.type) {
+        /*switch (json.type) {
             case "food":{
                     let food = getFood(data.foodid)
                     if(food.money<=data.playerMoney)
@@ -117,7 +107,6 @@ function execute(wss, ws, req) {
                         sqlCommand+=`WHERE ID = ${player.ID}`
                         sql.query(sqlCommand,(err,rows)=>{
                             if(err)console.log(err)
-
                         })
                     }
                 }
@@ -150,7 +139,7 @@ function execute(wss, ws, req) {
                 console.log('getEat')
                 hotpot[data.queueID].eat()
             }
-        }
+        }*/
     } catch(e) {
         console.log(e)
     }
