@@ -18,62 +18,26 @@ html(lang='en')
     script(src='javascripts/MainSystem/ResponseEventListener.js')
     // <script disable-devtool-auto src="https://cdn.jsdelivr.net/npm/disable-devtool"></script>
     script(src='https://code.jquery.com/ui/1.13.2/jquery-ui.js' integrity='sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c=' crossorigin='anonymous')
-    style.
-      /*選擇按鈕*/
-      .mod-tab .tab
-      {
-      float:left;
-      padding:10px 20px;
-      border:1px solid #FFD78C;
-      border-top: 1px solid #FFD78C;
-      border-right:1px solid #FFD78C;
-      background-color:#FF7300;
-      }
-      .header .tab:last-child
-      {
-      border-right:1px solid #ffffff;
-      }
-      /*下方框線*/
-      .content
-      {
-      border-style:outset;
-      border:3px solid #D68B00;
-      width:606px;
-      height: 400px;
-      }
-      .header::after
-      {
-      content:'';
-      display:block;
-      clear:both;
-      }
-      /*按下的顏色*/
-      .mod-tab .header .active
-      {
-      background-color:#FFB366;
-      }
-      .mod-tab .content .panel
-      {
-      display:none
-      }
-      .mod-tab .content .active
-      {
-      display:block;
-      }
-      #tds table,#tds tr,#tds td{border:1px solid #000;}
 
   body
 
     .main
+      .content2
+          .panel(id='10')
+            div
+              | 鍋內食材列表:
+              table(style='border:8px #FFC559 solid;' cellpadding='10' border='1')
+                tbody(id='potTableBody')
+          input(type='button' value='偷吃!' id='stealBtn' style='width:42px;height:42px;')
       .mod-tab(id="foodList")
               .header
                 button.tab.active 肉品
                 button.tab 海鮮
                 button.tab 蔬菜
                 button.tab 麵類
-                button.tab 傳統火鍋料-1
-                button.tab 傳統火鍋料-2
+                button.tab 傳統火鍋料
                 button.tab 神秘食材
+                button.tab 飲料
               .content
                 .panel.active(id="1")
                   div
@@ -98,11 +62,9 @@ html(lang='en')
                 .panel(id="6")
                   table(style='border:8px #FFC559 solid;' cellpadding='10' border='1')
                     tbody
-
                 .panel(id="7")
                   table(style='border:8px #FFC559 solid;' cellpadding='10' border='1')
                     tbody
-
       .record(tabindex='0')
         .playerInfo 個人資訊
         .history 遊玩紀錄

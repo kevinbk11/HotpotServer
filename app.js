@@ -8,7 +8,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var gameRouter = require('./routes/game');
-var game1Router = require('./routes/game1')
+var minigameRouter = require('./routes/minigame')
 
 var app = express();
 
@@ -60,15 +60,7 @@ app.use('/users', usersRouter);
 
 app.post('/game', gameRouter.router);
 
-app.post('/game/game1',game1Router)
-
-app.get('/game/game1',game1Router)
-
-app.use('/test', (req, res) => {
-    res.render('mainSystemLayout')
-})
-
-
+app.get('/minigame',minigameRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -87,4 +79,4 @@ app.use(function(err, req, res, next) {
 });
 
 
-module.exports = app;
+module.exports = {'app':app,'wss':wss};

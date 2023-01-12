@@ -12,30 +12,62 @@ class Player
         this.Exp=exp
         this.Unlocked=unlocked
         this.ws=ws
-        this.start()
+        this.isNotStarving=true
     }
     start(){ 
         $(".bar.sp").css("width",`${this.SatPoint}%`)
         $(".bar.hp").css("width",`${this.HealthyPoint}%`)
         $(".bar.wp").css("width",`${this.ThirstyPoint}%`)
         setInterval(()=>{
-            if(this.SatPoint!=0)this.SatPoint-=1;
+            if(this.SatPoint!=0)this.setSP(-1)
+            if(this.SatPoint==0 && this.isNotStarving)
+            {
+                this.isNotStarving=false
+                let id = setInterval(()=>{
+                    if(this.HealthyPoint!=0 && this.SatPoint==0)
+                    {
+                        this.setHP(-20)
+                        $(".bar.hp").css("width",`${this.HealthyPoint}%`)
+                    }
+                },10000)
+                let id2=setInterval(()=>{
+                    if(this.SatPoint!=0)
+                    {
+                        clearInterval(id)
+                        clearInterval(id2)
+                        this.isNotStarving=true
+                    }
+                },100)
+            }
             $(".bar.sp").css("width",`${this.SatPoint}%`)
         },30000)
         setInterval(()=>{
-            if(this.ThirstyPoint!=0)this.ThirstyPoint-=1;
+            if(this.ThirstyPoint!=0)this.setTP(-1)
             $(".bar.wp").css("width",`${this.ThirstyPoint}%`)
         },20000)
     }
-    setMoneyRequest(money)
+    setHP(hp)
     {
-
-        let jsonBuilder = new stringJsonBuilder('setMoney')
-        let request = jsonBuilder.addData('value',Money).build()
-        this.ws.send(request)
+        this.HealthyPoint+=hp
+        $(".bar.hp").css("width",`${this.HealthyPoint}%`)
+        if(this.HealthyPoint>100)this.HealthyPoint=100
+        
+    }
+    setSP(sp)
+    {
+        this.SatPoint+=sp
+        $(".bar.sp").css("width",`${this.SatPoint}%`)
+        if(this.SatPoint>100)this.SatPoint=100
+    }
+    setTP(tp)
+    {
+        this.ThirstyPoint+=tp
+        $(".bar.wp").css("width",`${this.ThirstyPoint}%`)
+        if(this.ThirstyPoint>100)this.ThirstyPoint=100
     }
     setMoney(money)
     {
         this.Money+=money
+        $(".money").html(this.Money+"$")
     }
 }

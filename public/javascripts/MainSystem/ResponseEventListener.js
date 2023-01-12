@@ -1,7 +1,7 @@
 function listenerStart(jsonBuilder)
 {
     let player=null
-    console.log('start')
+
     $(document).on('errorResponse',()=>{
         alert("error")
         $(document).href('/')
@@ -14,7 +14,6 @@ function listenerStart(jsonBuilder)
         $("#content").append(`<a>:${data.value}<a><br>`)
         if($(`.${data.name}`).length==1)
         {
-            console.log(data.name)
             $("#content").append(`
             <div id="${data.name}Dialog" class=dialog title="對${data.name}玩家的操作">
                 <input type="button" class=ui-button value="檢舉" id=btn1 style="width:75px">
@@ -49,43 +48,45 @@ function listenerStart(jsonBuilder)
         })
     })
     $(document).on('getDataResponse',(event,data)=>{
-        console.log('get')
         if(data.success)
         {
+            
             player=new Player(data.Name,data.ID,data.HealthyPoint,data.SatPoint,data.ThirstyPoint,data.Money,data.Level,data.Exp,data.Unlocked,ws)
+            $('.money').html(`${data.Money}$`)
             $(document).trigger('setPlayer',player)
-            console.log($('.money').html(`${data.Money}$`))
             let unlocked=[]
             let foodArr = getFoodArray()
             for(let i = 0;i<foodArr.length;i++)
             {
                 if(foodArr[i].level<=player.Level)
                 {
+                    if(foodArr[i].type==7)foodArr[i].type=6
                     unlocked.push(foodArr[i])
                 }
             }
-            for(let type=1;type<=7;type++)
+            for(let type=1;type<=6;type++)
             {
                 let foodListHtml = ""
+                let count =0
                 for(let i = 0;i<unlocked.length;i++)
                 { 
                     if(unlocked[i].type!=type)continue
-                    if(i%2==0)
-                    {
-                        foodListHtml+="<tr>"
-                    }
+                    if(count==0)foodListHtml+='<tr>'
                     let food = unlocked[i]
-                    foodListHtml+=`<td>${food.name}${food.money}$<br><input id="food${food.foodID}" type='button' style="background-image:url('../../img/food/food${food.foodID}.jpg');background-size: 100px 100px;width:100px;height:100px"><br>煮${food.needTime}秒</td>`
-                    if(i%2==1)
-                    {
-                        foodListHtml+="</tr>"
+                    foodListHtml+=`<td>${food.name}${food.money}$<br><input class="listBtn" id="food${food.foodID}" type='button' style="background-image:url('../../img/food/food${food.foodID}.jpg');background-size: 110px 110px;width:110px;height:110px"><br>煮${food.needTime}秒</td>`
+                    count++
+                    if(count==6){
+                        foodListHtml+='</tr>'
+                        count=0
                     }
                 }
+                if(count!=0)foodListHtml+='</tr>'
                 $(`.mod-tab .content #${type} tbody`).append(foodListHtml)
                 for(let i = 0;i<unlocked.length;i++)
                 {
                     if(unlocked[i].type!=type)continue
                     $(`.mod-tab .content #food${i+1}`).on('click',()=>{
+                        console.log(player.Money)
                         ws.send(jsonBuilder.changeType('food').
                                 addData('foodid',i+1).
                                 addData('playerMoney',player.Money).
@@ -103,8 +104,17 @@ function listenerStart(jsonBuilder)
         }
         else
         {
-            alert("你已登入")
-            window.location.href='/'
+            if(localStorage.getItem('valid')=='true')
+            {
+                ws.send(jsonBuilder.changeType('backToHotpot').build())
+            }
+            else
+            {
+                window.location.href='/'
+                alert("你已登入")     
+            }
+            localStorage.removeItem('id')
+            localStorage.removeItem('valid')
         }
     })
     $(document).on('getPotFoodResponse',(e,data)=>{
@@ -114,11 +124,138 @@ function listenerStart(jsonBuilder)
         if(data.success)
         {
             player.setMoney(-data.money)
-            $('.money').html(`${player.Money}$`)
+            let listHtml =`
+            <td id=potFood_td${data.queueID-1}>
+                ${data.name}
+                <br>
+                <input type="button" id=potFood${data.queueID-1} style="background-image:url('../../img/food/food${data.foodID}.jpg');width:100px;height:100px;background-size:100px 100px" class="listBtn">
+            <br>
+            <p id=time${data.queueID-1}>煮了0秒</p>
+            </td>`
+            
+            let line = $('.content2 #potTableBody tr').length
+            if($(`.content2 #potTableBody #l${line} td`).length==6)
+            {
+                line++
+                $('.content2 #potTableBody').append(`<tr id=l${line}></tr>`)
+            }
+            $('.content2 #potTableBody tr').last().append(listHtml)
+            $(`#potFood${data.queueID-1}`).on('click',()=>{
+
+                ws.send(jsonBuilder.changeType('eat').
+                        addData('queueID',data.queueID-1).
+                        build())
+
+                let father = $(`#potFood${data.queueID-1}`).parent().parent()
+                let lastEle = father
+                let nextEle =father.next()
+                $(`#potFood_td${data.queueID-1}`).remove()
+                while(nextEle.length!=0)
+                {
+                    nextEle.children().first().appendTo(lastEle)
+                    lastEle=nextEle
+                    console.log(nextEle)
+                    nextEle=nextEle.next()
+                }
+                if(lastEle.children().length==0)
+                {
+                    if(father.parent().children().length!=1)lastEle.remove()
+                }
+                /*$(`#potFood${data.queueID-1}`).parent().parent().last().children().first().appendTo($(`#potFood${data.queueID-1}`).parent().parent())
+                $(`#potFood_td${data.queueID-1}`).remove()*/
+
+            })
         }
         else
         {
             alert("你沒錢了乞丐，去找工作賺錢。")
+        }
+    })
+    $(document).on('getMyFoodListResponse',(e,data)=>{
+        let listHtml = '<tr id=l1>'
+        let total=0
+        let line=1
+        for(let i =0;i<data.food.length;i++)
+        {
+            let foodArray=getFoodArray()
+            let food = foodArray[data.food[i].foodID-1]
+            listHtml+=`
+                    <td id=potFood_td${data.food[i].queueID}>
+                        ${food.name}
+                        <br>
+                        <input type="button" id=potFood${data.food[i].queueID} style="background-image:url('../../img/food/food${food.foodID}.jpg');width:100px;height:100px;background-size:100px 100px" class="listBtn">
+                        <br>
+                        <p id=time${data.food[i].queueID}>煮了${data.food[i].nowTime}秒</p>
+                    </td>
+                    <br>`
+            total++
+            if(total==6)
+            {
+                total=0
+                line++
+                listHtml+= `</tr><tr id=l${line}>`
+            }
+        }
+
+        $('.content2 #potTableBody').append(listHtml)
+        for(let i =0;i<data.food.length;i++)
+        {
+            $(`#potFood${data.food[i].queueID}`).on('click',()=>{
+                ws.send(jsonBuilder.changeType('eat').
+                addData('queueID',data.food[i].queueID).
+                build())
+                let father = $(`#potFood${data.food[i].queueID}`).parent().parent()
+                let lastEle = father
+                let nextEle =father.next()
+                $(`#potFood_td${data.food[i].queueID}`).remove()
+                while(nextEle.length!=0)
+                {
+                    nextEle.children().first().appendTo(lastEle)
+                    lastEle=nextEle
+                    console.log(nextEle)
+                    nextEle=nextEle.next()
+                }
+                if(lastEle.children().length==0)
+                {
+                    if(father.parent().children().length!=1)lastEle.remove()
+                }
+
+                //$(`.content2 #potTableBody #l${i/6+2} td`).first().appendTo($(`.content2 #potTableBody #l${i/6+1}`))
+            })
+        }
+    
+    })
+    $(document).on('foodTimeUpdateResponse',(e,data)=>{
+        $(`#time${data.queueID}`).html(`煮了${data.nowTime}秒`)
+        if(data.nowTime==120)$(`#potFood_td${data.queueID}`).remove()
+    })
+
+    $(document).on('eatResponse',(e,data)=>{
+        let food = getFoodArray()[data.foodID-1]
+        player.setHP(food.healHP)
+        player.setSP(food.healSP)
+    })
+
+    $(document).on('stealResponse',(e,data)=>{
+        if(data.success)alert(`你偷吃了${data.stealWhos}的${data.stealWhat}!!`)
+        else alert('目前火鍋裡面沒有食物!')
+    })
+
+    $(document).on('getStealResponse',(e,data)=>{
+        let father = $(`#potFood${data.queueID}`).parent().parent()
+        let lastEle = father
+        let nextEle =father.next()
+        $(`#potFood_td${data.queueID}`).remove()
+        while(nextEle.length!=0)
+        {
+            nextEle.children().first().appendTo(lastEle)
+            lastEle=nextEle
+            console.log(nextEle)
+            nextEle=nextEle.next()
+        }
+        if(lastEle.children().length==0)
+        {
+            if(father.parent().children().length!=1)lastEle.remove()
         }
     })
 }

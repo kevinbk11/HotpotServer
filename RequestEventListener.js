@@ -8,7 +8,12 @@ class RequestEventListener
     }
     on(eventName,eventHandler)
     {
-        this.eventSet[eventName]=eventHandler
+        if(this.eventSet[eventName]==null)
+        {
+            this.eventSet[eventName]=eventHandler
+            console.log(this.eventSet[eventName])
+        }
+
     }
     trigger(eventName,wss,ws,json)
     {
@@ -21,7 +26,7 @@ class RequestEventListener
 let listener = new RequestEventListener()
 for(e in eventList)
 {
-    console.log(eventList[e])
     listener.on(e,eventList[e])
 }
+
 module.exports=listener

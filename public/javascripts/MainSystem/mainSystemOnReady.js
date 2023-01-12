@@ -1,22 +1,51 @@
 
 let ws = null
 window.onload = () => {
-    ws = new WebSocket($(location).attr('href').replace("https", "wss"))
+
     try{
-        let player = null
+        ws = new WebSocket($(location).attr('href').replace("https", "wss"))
+        let player = null    
         $(document).on('setPlayer',(e,data)=>{
             player=data
+            let score=parseInt(localStorage.getItem('score'))
+            if(score>=0)
+            {
+                player.setMoney(score)
+            }
+            localStorage.clear()
+            $(".number").html(player.Level)
+            player.start()
         })
-
+        let listHtml =`
+        <td id=water>
+            水5$
+            <br>
+            <input type="button" id=water style="background-image:url('../../img/food/water.jpg');width:110px;height:110px;background-size:110px 110px" class="listBtn">
+        </td>`
+        $("#7 tbody").append(listHtml)
+        $("#water").on('click',()=>{
+            player.setMoney(-5)
+            player.setTP(5)
+        })
         $("#name").css("display","none")
         let id = $("#name").html()
         $("#name").html("")
         console.log("?")
         let jsonBuilder = new StringJsonBuilder(id)
+
         let foodListDialog=$(".mod-tab").dialog({title:'菜單',height:600,width:800,resizable:false,draggable:true,autoOpen:false});
         foodListDialog.prev(".ui-dialog-titlebar").css("background","#FFDEAD")
         foodListDialog.parent().css('padding','0em')
         foodListDialog.css("background","#FFDEAD")
+
+        let potListDialog=$(".content2").dialog({title:'鍋內的食物',height:600,width:800,resizable:false,draggable:true,autoOpen:false});
+        potListDialog.prev(".ui-dialog-titlebar").css("background","#FFDEAD")
+        potListDialog.css("background","#FFDEAD")
+        potListDialog.parent().css('padding','0em')
+
+        $("#foodList").on('click',()=>{
+            potListDialog.dialog('open') 
+        })
 
         $("#buy").on('click',()=>{
             foodListDialog.dialog('open')
@@ -34,21 +63,37 @@ window.onload = () => {
         }
 
         $(window).on('unload',(e)=>{
-            ws.send(jsonBuilder.
-                changeType('exit').
-                addData('value','exit').
-                addData('playerData',JSON.stringify(player)).
-                build())
-            ws.send(jsonBuilder.
-                changeType('changeOnline').
-                build())
+            
+            if(player!=null)
+            {   
+                let game=false
+                if(jsonBuilder.type=='minigame')game=true
+                ws.send(jsonBuilder.
+                    changeType('exit').
+                    addData('value','exit').
+                    addData('playerData',JSON.stringify(player)).
+                    addData('isGaming',game).
+                    build())
+                ws.send(jsonBuilder.
+                    changeType('changeOnline').
+                    build())
+
+            }
+
         })
 
 
         ws.onopen = () => {
             listenerStart(jsonBuilder)
+            if(localStorage.getItem('valid')=='true')
+            {
+                ws.send(jsonBuilder.changeType('backToHotpot').build() )
+                localStorage.removeItem('valid')
+                alert(`你贏得了${localStorage.getItem('score')}元`)
+            }
             json = jsonBuilder.changeType('getData').build()
             ws.send(json)
+            ws.send(jsonBuilder.changeType('getMyFoodList').build())
 
          }
         
@@ -75,18 +120,18 @@ window.onload = () => {
             }
         })
 
-        $(".button.match").on('click',()=>{
-            /*$.get("index2.html", function(html_string){
-                $('head').html(html_string)
-                $('body').html(html_string)
-            },'html'); */
+        $('#stealBtn').on('click',()=>{
+            ws.send(jsonBuilder.changeType('steal').build())
+        })
 
+        $(".button.match").on('click',()=>{
+            jsonBuilder.changeType('minigame')
+            window.location.href='/minigame';
         })
 
         ws.onmessage = (e) => {
             let response = JSON.parse(e.data)
             let data = JSON.parse(response.data)
-            console.log(response.type)
             $(document).trigger(response.type,data)
         }
         

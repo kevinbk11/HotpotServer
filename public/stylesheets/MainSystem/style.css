@@ -305,3 +305,74 @@ input[type="button"] {
     color: darkred;
     content: " } ";
 }
+
+      /*選擇按鈕*/
+      .mod-tab .tab
+      {
+      float:left;
+      padding:10px 20px;
+      border:1px solid #FFD78C;
+      border-top: 1px solid #FFD78C;
+      border-right:1px solid #FFD78C;
+      background-color:#FF7300;
+      }
+      .header .tab:last-child
+      {
+      border-right:1px solid #ffffff;
+      }
+      /*下方框線*/
+      .content
+      {
+      border-style:outset;
+      border:3px solid #D68B00;
+      width:702px;
+      height: 501px;
+      }
+      .header::after
+      {
+      content:'';
+      display:block;
+      clear:both;
+      }
+      /*按下的顏色*/
+      .mod-tab .header .active
+      {
+      background-color:#FFB366;
+      }
+      .mod-tab .content .panel
+      {
+      display:none
+      }
+      .mod-tab .content .active
+      {
+      display:block;
+      }
+      #tds table,#tds tr,#tds td{border:1px solid #000;}
+      input[class='listBtn']{border:0;
+        background-color:#D68B00;
+        color:#fff;
+        border-radius:10px;
+        cursor:pointer;}
+      
+      input[class='listBtn']:hover{
+        color:#D68B00;
+        background-color:#fff;
+        border:2px #003C9D solid;
+      }
+      #mnya-select {
+       font-size:21px; /*文字大小*/
+       color: #D68B00; /*文字顏色*/
+       background-color: #FFDEAD; /*選單背景顏色*/
+       position: relative;
+       padding: 8px;
+       border-radius: 42px;
+        
+      }
+      /*下方框線*/
+      .content2[class]
+      {
+          border-style:outset;
+          border:3px solid #D68B00;
+          width:400px;
+          height: 400px;
+      }

@@ -5,13 +5,13 @@ const listener = require('./RequestEventListener')
 
 
 
-
+const jsonBuilder=new StringJsonBuilder('error')
 
 function execute(wss, ws, req) {
+
     try {
-        const jsonBuilder=new StringJsonBuilder('error')
+
         let json = JSON.parse(req)
-        let data = JSON.parse(json.data)
         let id = json.id
 
         let sqlCommand = `SELECT * FROM user WHERE id = ${id}`
@@ -23,6 +23,7 @@ function execute(wss, ws, req) {
             }
             else 
             {
+                console.log(json.type)
                 listener.trigger(json.type,wss,ws,json)
             }
         })
