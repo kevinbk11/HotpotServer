@@ -11,7 +11,6 @@ class RequestEventListener
         if(this.eventSet[eventName]==null)
         {
             this.eventSet[eventName]=eventHandler
-            console.log(this.eventSet[eventName])
         }
 
     }

@@ -37,7 +37,6 @@ function removeFoodFromHotpot(food)
 
 function getData(wss,ws,data,id)
 {
-    console.log('trig')
     for (let i = 0; i < loginPlayer.length; i++) {
         if (loginPlayer[i] == id) {
             ws.send(jsonBuilder.
@@ -82,8 +81,6 @@ function changeOnline(wss,ws,data,id)
 function food(wss,ws,data,id)
 {
     let food = getFood(data.foodid)
-    console.log(food)
-    console.log(data.playerMoney)
     if(food.money<=data.playerMoney)
     {
         food.queueID=queueID
@@ -131,19 +128,7 @@ function exit(wss,ws,data,id)
         if(loginPlayer[i]==id)
         {
             loginPlayer.splice(i,i+1)
-            player = JSON.parse(data.playerData)
-            sqlCommand = `UPDATE userstatus SET `
-            for(k in player)
-            {
-                if(k=='ws' || k=='Name' || k=='ID' || k=='isNotStarving')continue;
-                sqlCommand+=(`${k}='${player[k]}'`)
-                if(k!='Exp')sqlCommand+=','
-                else sqlCommand+=" "
-            }
-            sqlCommand+=`WHERE ID = ${player.ID}`
-            sql.query(sqlCommand,(err,rows)=>{
-                if(err)console.log(err)
-            })
+            update(data.playerData)
         }
     }
     if(data.isGaming)
@@ -242,6 +227,27 @@ function backToHotpot(wss,ws,data,id)
     }
 }
 
+function updateEvent(wss,ws,data,id)
+{
+    update(data.playerData)
+}
+function update(data)
+{
+    let player = JSON.parse(data)
+    sqlCommand = `UPDATE userstatus SET `
+    for(k in player)
+    {
+        if(k=='ws' || k=='Name' || k=='ID' || k=='isNotStarving' ||k=='needExp')continue;
+        sqlCommand+=(`${k}='${player[k]}'`)
+        if(k!='Exp')sqlCommand+=','
+        else sqlCommand+=" "
+    }
+    sqlCommand+=`WHERE ID = ${player.ID}`
+    sql.query(sqlCommand,(err,rows)=>{
+        if(err)console.log(err)
+    })
+}
+
 module.exports={
     'getData':getData,
     'changeOnline':changeOnline,
@@ -254,4 +260,5 @@ module.exports={
     'getMyFoodList':getMyFoodList,
     'foodTimeUpdate':foodTimeUpdate,
     'steal':steal,
-    'backToHotpot':backToHotpot}
+    'backToHotpot':backToHotpot,
+    'update':updateEvent}

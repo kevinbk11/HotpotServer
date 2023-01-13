@@ -13,7 +13,6 @@ function execute(wss, ws, req) {
 
         let json = JSON.parse(req)
         let id = json.id
-
         let sqlCommand = `SELECT * FROM user WHERE id = ${id}`
         sql.query(sqlCommand,(err,rows)=>{
             if(rows.length==0){
@@ -23,7 +22,6 @@ function execute(wss, ws, req) {
             }
             else 
             {
-                console.log(json.type)
                 listener.trigger(json.type,wss,ws,json)
             }
         })

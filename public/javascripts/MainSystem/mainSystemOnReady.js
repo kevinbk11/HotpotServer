@@ -30,7 +30,6 @@ window.onload = () => {
         $("#name").css("display","none")
         let id = $("#name").html()
         $("#name").html("")
-        console.log("?")
         let jsonBuilder = new StringJsonBuilder(id)
 
         let foodListDialog=$(".mod-tab").dialog({title:'菜單',height:600,width:800,resizable:false,draggable:true,autoOpen:false});

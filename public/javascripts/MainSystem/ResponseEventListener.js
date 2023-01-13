@@ -86,7 +86,6 @@ function listenerStart(jsonBuilder)
                 {
                     if(unlocked[i].type!=type)continue
                     $(`.mod-tab .content #food${i+1}`).on('click',()=>{
-                        console.log(player.Money)
                         ws.send(jsonBuilder.changeType('food').
                                 addData('foodid',i+1).
                                 addData('playerMoney',player.Money).
@@ -116,9 +115,6 @@ function listenerStart(jsonBuilder)
             localStorage.removeItem('id')
             localStorage.removeItem('valid')
         }
-    })
-    $(document).on('getPotFoodResponse',(e,data)=>{
-
     })
     $(document).on('foodResponse',(e,data)=>{
         if(data.success)
@@ -154,7 +150,6 @@ function listenerStart(jsonBuilder)
                 {
                     nextEle.children().first().appendTo(lastEle)
                     lastEle=nextEle
-                    console.log(nextEle)
                     nextEle=nextEle.next()
                 }
                 if(lastEle.children().length==0)
@@ -212,7 +207,6 @@ function listenerStart(jsonBuilder)
                 {
                     nextEle.children().first().appendTo(lastEle)
                     lastEle=nextEle
-                    console.log(nextEle)
                     nextEle=nextEle.next()
                 }
                 if(lastEle.children().length==0)
@@ -232,8 +226,23 @@ function listenerStart(jsonBuilder)
 
     $(document).on('eatResponse',(e,data)=>{
         let food = getFoodArray()[data.foodID-1]
-        player.setHP(food.healHP)
-        player.setSP(food.healSP)
+        let chokeRate = (100.0-player.ThirstyPoint)*0.9*10
+        let dieRate = (100.0-player.ThirstyPoint)*0.1*10
+        let f=(x)=>{
+            return Math.floor(Math.random()*x);
+        }
+        let r = f(1000)
+        if(r<=dieRate)
+        {
+            alert("皮諾可這個直接嗆死")
+            player.setHP(-100)
+        }
+        else if(r<=dieRate+chokeRate)
+        {
+            alert('噎到了咳咳咳咳咳')
+            player.setHP(player.ThirstyPoint-100)
+        }
+        player.eat(food)
     })
 
     $(document).on('stealResponse',(e,data)=>{
@@ -250,7 +259,6 @@ function listenerStart(jsonBuilder)
         {
             nextEle.children().first().appendTo(lastEle)
             lastEle=nextEle
-            console.log(nextEle)
             nextEle=nextEle.next()
         }
         if(lastEle.children().length==0)
