@@ -75,6 +75,8 @@ class Player
         alert(`你現在是等級${this.Level}，目前等級所需的經驗值為${this.needExp}`)
         this.update()
         $('.number').html(this.Level)
+        location.reload(true);
+
     }
     update()
     {
