@@ -163,7 +163,7 @@ function listenerStart(jsonBuilder)
         }
         else
         {
-            alert("你沒錢了乞丐，去找工作賺錢。")
+            alert("你沒錢了，去找工作賺錢。")
         }
     })
     $(document).on('getMyFoodListResponse',(e,data)=>{

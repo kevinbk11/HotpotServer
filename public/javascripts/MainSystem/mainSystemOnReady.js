@@ -15,6 +15,16 @@ window.onload = () => {
             localStorage.clear()
             $(".number").html(player.Level)
             player.start()
+            $("#water").on('click',()=>{
+                if(player.Money>=5){
+                    player.setMoney(-5)
+                    player.setTP(5)
+                }
+                else
+                {
+                    alert("你沒錢了，去找工作賺錢。")
+                }
+            })
         })
         let listHtml =`
         <td id=water>
@@ -23,10 +33,7 @@ window.onload = () => {
             <input type="button" id=water style="background-image:url('../../img/food/water.jpg');width:110px;height:110px;background-size:110px 110px" class="listBtn">
         </td>`
         $("#7 tbody").append(listHtml)
-        $("#water").on('click',()=>{
-            player.setMoney(-5)
-            player.setTP(5)
-        })
+
         $("#name").css("display","none")
         let id = $("#name").html()
         $("#name").html("")

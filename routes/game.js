@@ -83,7 +83,7 @@ router.post('/game', (req, res) => {
                 })
                 mysqlConnection.query(`INSERT INTO user VALUE (${j+1},'${data.account}','${data.password}','${data.nickname}','${newId}');`)
                 mysqlConnection.query(`INSERT INTO userstatus VALUE (${j+1},'${data.nickname}',100,100,100,130,1,0,${newId});`)
-                res.render('mainSystemLayout',{name:newId})
+                res.send('<script>alert("註冊成功!請在登入介面登入!");window.location.href="/"</script>')
             } else {
                 console.log(err);
             }
